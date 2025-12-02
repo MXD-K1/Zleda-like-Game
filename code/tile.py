@@ -1,5 +1,5 @@
 import pygame
-from settings import *
+from settings import TILE_SIZE, HITBOX_OFFSET
 
 class Tile(pygame.sprite.Sprite):
     def __init__(self, pos, groups: list[pygame.sprite.Group], sprite_type,

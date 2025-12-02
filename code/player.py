@@ -1,6 +1,7 @@
 import pygame
 
-from settings import *
+from settings import HITBOX_OFFSET
+from data import weapon_data, magic_data
 from support import import_folder
 from entity import Entity
 

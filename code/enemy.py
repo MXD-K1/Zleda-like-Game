@@ -1,6 +1,6 @@
 import pygame
 
-from settings import *
+from data import monster_data
 from entity import Entity
 from support import *
 
@@ -50,6 +50,7 @@ class Enemy(Entity):
         self.hit_sound.set_volume(0.6)
         self.attack_sound.set_volume(0.3)
 
+    # noinspection PyAttributeOutsideInit
     def import_graphics(self, name):
         self.animations = {'idle': [], 'move': [], 'attack': []}
         main_path = f'../graphics/monsters/{name}/'
@@ -151,4 +152,3 @@ class Enemy(Entity):
     def enemy_update(self, player):
         self.get_status(player)
         self.actions(player)
-

@@ -2,7 +2,8 @@ import sys
 
 import pygame
 
-from settings import *
+from settings import WIDTH, HEIGHT, FPS
+from color import WATER_COLOR
 from level import Level
 # from debug import debug
 

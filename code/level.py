@@ -3,7 +3,7 @@ from random import choice, randint
 import pygame
 
 from ui import UI
-from settings import *
+from settings import TILE_SIZE
 from tile import Tile
 from player import Player
 from support import *
@@ -37,6 +37,7 @@ class Level:
         self.animation_player = AnimationPlayer()
         self.magic_player = MagicPlayer(self.animation_player)
 
+    # noinspection PyAttributeOutsideInit
     def create_map(self):
         layouts = {
             'boundary': import_csv_layout('../map/map_FloorBlocks.csv'),
@@ -169,4 +170,3 @@ class CameraGroup(pygame.sprite.Group):
                          and sprite.sprite_type == 'enemy']
         for enemy in enemy_sprites:
             enemy.enemy_update(player)
-
