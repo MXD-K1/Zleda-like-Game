@@ -1,6 +1,7 @@
 import pygame
+from pygame import Vector2
 
-from settings import *
+from data import monster_data
 from entity import Entity
 from support import *
 
@@ -13,7 +14,11 @@ class Enemy(Entity):
         self.import_graphics(monster_name)
         self.status = 'idle'
         self.image = self.animations[self.status][self.frame_index]
-        self.rect = self.image.get_rect(topleft=pos)
+        if monster_name == "raccoon":
+            y_offset = 176
+            self.rect = self.image.get_rect(topleft=pos - Vector2(0, y_offset))
+        else:
+            self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(0, -10)
         self.obstacle_sprites = obstacle_sprites
 
@@ -50,6 +55,7 @@ class Enemy(Entity):
         self.hit_sound.set_volume(0.6)
         self.attack_sound.set_volume(0.3)
 
+    # noinspection PyAttributeOutsideInit
     def import_graphics(self, name):
         self.animations = {'idle': [], 'move': [], 'attack': []}
         main_path = f'../graphics/monsters/{name}/'
@@ -151,4 +157,3 @@ class Enemy(Entity):
     def enemy_update(self, player):
         self.get_status(player)
         self.actions(player)
-

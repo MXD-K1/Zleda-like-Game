@@ -1,6 +1,8 @@
 import pygame
 
 from settings import *
+from data import weapon_data, magic_data
+from color import *
 
 
 class UI:

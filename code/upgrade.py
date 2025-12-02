@@ -1,6 +1,7 @@
 import pygame
 
-from settings import *
+from settings import UI_FONT, UI_FONT_SIZE
+from color import *
 
 
 class Upgrade:
@@ -13,8 +14,8 @@ class Upgrade:
         self.font = pygame.font.Font(UI_FONT, UI_FONT_SIZE)
 
         # item dimensions
-        self.height = self.display_surf.get_size()[1] * 0.8
-        self.width = self.display_surf.get_size()[0] // (self.attribute_number + 1)
+        self.height = self.display_surf.get_height() * 0.8
+        self.width = self.display_surf.get_width() // (self.attribute_number + 1)
         self.create_items()
 
         # selection_system
@@ -46,13 +47,14 @@ class Upgrade:
             if current_time - self.selection_time >= 300:
                 self.can_move = True
 
+    # noinspection PyAttributeOutsideInit
     def create_items(self):
         self.item_list = []
 
         for item_number, index in enumerate(range(self.attribute_number)):
-            top = self.display_surf.get_size()[1] * 0.1
+            top = self.display_surf.get_height() * 0.1
 
-            full_width = self.display_surf.get_size()[0]
+            full_width = self.display_surf.get_width()
             increment = full_width // self.attribute_number
             left = (item_number * increment) + (increment - self.width) // 2
 
@@ -70,8 +72,8 @@ class Upgrade:
             item.display(self.display_surf, self.selection_index, name, value, max_value, cost)
 
 class Item:
-    def __init__(self, l, t, w, h, index, font):
-        self.rect = pygame.Rect(l, t, w, h)
+    def __init__(self, left, top, width, height, index, font):
+        self.rect = pygame.Rect(left, top, width, height)
         self.index = index
         self.font = font
 
@@ -106,7 +108,7 @@ class Item:
     def trigger(self, player):
         upgrade_attribute = list(player.stats.keys())[self.index]
 
-        if (player.exp >= player.upgrade_cost[upgrade_attribute]
+        if (player.exp >= int(player.upgrade_cost[upgrade_attribute])
                 and player.stats[upgrade_attribute] < player.max_stats[upgrade_attribute]):
             player.exp -= player.upgrade_cost[upgrade_attribute]
             player.stats[upgrade_attribute] *= 1.2

@@ -41,7 +41,8 @@ class Entity(pygame.sprite.Sprite):
                     if self.direction.y > 0:  # up
                         self.hitbox.bottom = sprite.hitbox.top
 
-    def wave_value(self):  # get alpha
+    @staticmethod
+    def wave_value():  # get alpha
         value = sin(pygame.time.get_ticks())
         if value >= 0:
             return 255
