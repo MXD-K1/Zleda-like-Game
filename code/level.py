@@ -1,17 +1,18 @@
-from random import choice, randint
+from random import randint
 
 import pygame
+from pytmx.util_pygame import load_pygame
 
 from ui import UI
 from settings import TILE_SIZE
 from tile import Tile
 from player import Player
-from support import *
 from weapon import Weapon
 from enemy import Enemy
 from praticles import AnimationPlayer
 from magic import MagicPlayer
 from upgrade import Upgrade
+
 # from debug import debug
 
 class Level:
@@ -37,50 +38,31 @@ class Level:
         self.animation_player = AnimationPlayer()
         self.magic_player = MagicPlayer(self.animation_player)
 
-    # noinspection PyAttributeOutsideInit
+    # noinspection PyAttributeOutsideInit,PyTypeChecker,PyUnresolvedReferences
     def create_map(self):
-        layouts = {
-            'boundary': import_csv_layout('../map/map_FloorBlocks.csv'),
-            'grass': import_csv_layout('../map/map_Grass.csv'),
-            'object': import_csv_layout('../map/map_Objects.csv'),
-            'entities': import_csv_layout('../map/map_Entities.csv')
-        }
+        map_ = load_pygame('../map/map.tmx')
 
-        graphics = {
-            'grass': import_folder('../graphics/grass'),
-            'objects': import_folder('../graphics/objects')
-        }
+        for x, y, surf in map_.get_layer_by_name('Grass').tiles():
+            Tile((x * TILE_SIZE, y * TILE_SIZE),
+                 [self.visible_sprites, self.obstacle_sprites, self.attackable_sprites],
+                 'grass', surf)
 
-        for style, layout in layouts.items():
-            for row_index, row in enumerate(layout):
-                for col_index, col in enumerate(row):
-                    if col != '-1':
-                        x = col_index * TILE_SIZE
-                        y = row_index * TILE_SIZE
+        for x, y, surf in map_.get_layer_by_name('Objects').tiles():
+            Tile((x * TILE_SIZE, y * TILE_SIZE), [self.visible_sprites, self.obstacle_sprites],
+                 'object', surf)
 
-                        if style == 'boundary':
-                            Tile((x, y), [self.obstacle_sprites], 'invisible')
-                        if style == 'grass':
-                            Tile((x, y), [self.visible_sprites, self.obstacle_sprites,
-                                          self.attackable_sprites], 'grass',
-                                 surface=choice(graphics['grass']))
-                        if style == 'object':
-                            Tile((x, y), [self.visible_sprites, self.obstacle_sprites],
-                                 'object', surface=graphics['objects'][int(col)])
+        for x, y, surf in map_.get_layer_by_name('FloorBlocks').tiles():
+            Tile((x * TILE_SIZE, y * TILE_SIZE), [self.obstacle_sprites], 'invisible')
 
-                        if style == 'entities':
-                            if col == '394':
-                                self.player = Player((x, y), [self.visible_sprites],
-                                                     self.obstacle_sprites, self.create_attack, self.destroy_attack,
-                                                     self.create_magic)
-                            else:
-                                if col == '390': monster_name = 'bamboo'
-                                elif col == '391': monster_name = 'spirit'
-                                elif col == '392': monster_name = 'raccoon'
-                                else: monster_name = 'squid'
-                                Enemy(monster_name, (x, y), [self.visible_sprites, self.attackable_sprites],
-                                      self.obstacle_sprites, self.damage_player, self.trigger_death_particles,
-                                      self.add_exp)
+        for obj in map_.get_layer_by_name('Entities'):
+            if obj.name == "player":
+                self.player = Player((obj.x, obj.y), [self.visible_sprites],
+                                     self.obstacle_sprites, self.create_attack, self.destroy_attack,
+                                     self.create_magic)
+            else:
+                Enemy(obj.name, (obj.x, obj.y), [self.visible_sprites, self.attackable_sprites],
+                      self.obstacle_sprites, self.damage_player, self.trigger_death_particles,
+                      self.add_exp)
 
     def create_attack(self):
         self.current_attack = Weapon(self.player, [self.visible_sprites, self.attack_sprites])
@@ -140,6 +122,7 @@ class Level:
             self.visible_sprites.update()
             self.visible_sprites.enemy_update(self.player)
             self.player_attack_logic()
+
 
 class CameraGroup(pygame.sprite.Group):
     def __init__(self):

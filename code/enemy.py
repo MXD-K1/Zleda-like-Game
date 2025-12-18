@@ -16,9 +16,9 @@ class Enemy(Entity):
         self.image = self.animations[self.status][self.frame_index]
         if monster_name == "raccoon":
             y_offset = 176
-            self.rect = self.image.get_rect(topleft=pos - Vector2(0, y_offset))
+            self.rect = self.image.get_rect(center=pos - Vector2(0, y_offset))
         else:
-            self.rect = self.image.get_rect(topleft=pos)
+            self.rect = self.image.get_rect(center=pos)
         self.hitbox = self.rect.inflate(0, -10)
         self.obstacle_sprites = obstacle_sprites
 
