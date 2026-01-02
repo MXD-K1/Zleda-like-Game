@@ -8,37 +8,37 @@ class AnimationPlayer:
     def __init__(self):
         self.frames = {
             # magic
-            'flame': import_folder('../graphics/particles/flame/frames'),
-            'aura': import_folder('../graphics/particles/aura'),
-            'heal': import_folder('../graphics/particles/heal/frames'),
+            'flame': import_folder('../assets/graphics/particles/flame/frames'),
+            'aura': import_folder('../assets/graphics/particles/aura'),
+            'heal': import_folder('../assets/graphics/particles/heal/frames'),
 
             # attacks
-            'claw': import_folder('../graphics/particles/claw'),
-            'slash': import_folder('../graphics/particles/slash'),
-            'sparkle': import_folder('../graphics/particles/sparkle'),
-            'leaf_attack': import_folder('../graphics/particles/leaf_attack'),
-            'thunder': import_folder('../graphics/particles/thunder'),
+            'claw': import_folder('../assets/graphics/particles/claw'),
+            'slash': import_folder('../assets/graphics/particles/slash'),
+            'sparkle': import_folder('../assets/graphics/particles/sparkle'),
+            'leaf_attack': import_folder('../assets/graphics/particles/leaf_attack'),
+            'thunder': import_folder('../assets/graphics/particles/thunder'),
 
             # monster deaths
-            'squid': import_folder('../graphics/particles/smoke_orange'),
-            'raccoon': import_folder('../graphics/particles/raccoon'),
-            'spirit': import_folder('../graphics/particles/nova'),
-            'bamboo': import_folder('../graphics/particles/bamboo'),
+            'squid': import_folder('../assets/graphics/particles/smoke_orange'),
+            'raccoon': import_folder('../assets/graphics/particles/raccoon'),
+            'spirit': import_folder('../assets/graphics/particles/nova'),
+            'bamboo': import_folder('../assets/graphics/particles/bamboo'),
 
             # leafs
             'leaf': (
-                import_folder('../graphics/particles/leaf1'),
-                import_folder('../graphics/particles/leaf2'),
-                import_folder('../graphics/particles/leaf3'),
-                import_folder('../graphics/particles/leaf4'),
-                import_folder('../graphics/particles/leaf5'),
-                import_folder('../graphics/particles/leaf6'),
-                self.reflect_images(import_folder('../graphics/particles/leaf1')),
-                self.reflect_images(import_folder('../graphics/particles/leaf2')),
-                self.reflect_images(import_folder('../graphics/particles/leaf3')),
-                self.reflect_images(import_folder('../graphics/particles/leaf4')),
-                self.reflect_images(import_folder('../graphics/particles/leaf5')),
-                self.reflect_images(import_folder('../graphics/particles/leaf6'))
+                import_folder('../assets/graphics/particles/leaf1'),
+                import_folder('../assets/graphics/particles/leaf2'),
+                import_folder('../assets/graphics/particles/leaf3'),
+                import_folder('../assets/graphics/particles/leaf4'),
+                import_folder('../assets/graphics/particles/leaf5'),
+                import_folder('../assets/graphics/particles/leaf6'),
+                self.reflect_images(import_folder('../assets/graphics/particles/leaf1')),
+                self.reflect_images(import_folder('../assets/graphics/particles/leaf2')),
+                self.reflect_images(import_folder('../assets/graphics/particles/leaf3')),
+                self.reflect_images(import_folder('../assets/graphics/particles/leaf4')),
+                self.reflect_images(import_folder('../assets/graphics/particles/leaf5')),
+                self.reflect_images(import_folder('../assets/graphics/particles/leaf6'))
             )
         }
 

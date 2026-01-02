@@ -1,5 +1,4 @@
 import pygame
-from pygame import Vector2
 
 from data import monster_data
 from entity import Entity
@@ -14,11 +13,8 @@ class Enemy(Entity):
         self.import_graphics(monster_name)
         self.status = 'idle'
         self.image = self.animations[self.status][self.frame_index]
-        if monster_name == "raccoon":
-            y_offset = 176
-            self.rect = self.image.get_rect(center=pos - Vector2(0, y_offset))
-        else:
-            self.rect = self.image.get_rect(center=pos)
+
+        self.rect = self.image.get_frect(center=pos)
         self.hitbox = self.rect.inflate(0, -10)
         self.obstacle_sprites = obstacle_sprites
 
@@ -48,8 +44,8 @@ class Enemy(Entity):
         self.add_exp = add_exp
 
         # sounds
-        self.death_sound = pygame.mixer.Sound('../audio/death.wav')
-        self.hit_sound = pygame.mixer.Sound('../audio/hit.wav')
+        self.death_sound = pygame.mixer.Sound('../assets/audio/death.wav')
+        self.hit_sound = pygame.mixer.Sound('../assets/audio/hit.wav')
         self.attack_sound = pygame.mixer.Sound(monster_info['attack_sound'])
         self.death_sound.set_volume(0.6)
         self.hit_sound.set_volume(0.6)
@@ -58,7 +54,7 @@ class Enemy(Entity):
     # noinspection PyAttributeOutsideInit
     def import_graphics(self, name):
         self.animations = {'idle': [], 'move': [], 'attack': []}
-        main_path = f'../graphics/monsters/{name}/'
+        main_path = f'../assets/graphics/monsters/{name}/'
         for animation in self.animations.keys():
             self.animations[animation] = import_folder(main_path + animation)
 

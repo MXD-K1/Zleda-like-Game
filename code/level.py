@@ -40,7 +40,7 @@ class Level:
 
     # noinspection PyAttributeOutsideInit,PyTypeChecker,PyUnresolvedReferences
     def create_map(self):
-        map_ = load_pygame('../map/map.tmx')
+        map_ = load_pygame('../assets/map/map.tmx')
 
         for x, y, surf in map_.get_layer_by_name('Grass').tiles():
             Tile((x * TILE_SIZE, y * TILE_SIZE),
@@ -54,7 +54,7 @@ class Level:
         for x, y, surf in map_.get_layer_by_name('FloorBlocks').tiles():
             Tile((x * TILE_SIZE, y * TILE_SIZE), [self.obstacle_sprites], 'invisible')
 
-        for obj in map_.get_layer_by_name('Entities'):
+        for obj in map_.get_layer_by_name('Entity-Pos'):
             if obj.name == "player":
                 self.player = Player((obj.x, obj.y), [self.visible_sprites],
                                      self.obstacle_sprites, self.create_attack, self.destroy_attack,
@@ -133,7 +133,7 @@ class CameraGroup(pygame.sprite.Group):
         self.offset = pygame.math.Vector2()
 
         # floor
-        self.floor_surf = pygame.image.load('../graphics/tilemap/ground.png').convert()
+        self.floor_surf = pygame.image.load('../assets/graphics/tilemap/ground.png').convert()
         self.floor_rect = self.floor_surf.get_rect(topleft=(0, 0))
 
     def custom_draw(self, player):
