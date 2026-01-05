@@ -19,11 +19,12 @@ Creative Commons Zero (CC0) license*
 These steps will get this project running locally on your machine.
 
 ### Requirements
-1. You need **Python 3.x** and `pip` installed: 
+1. You need **Python 3.8** or higher and `pip` installed: 
 
-To ensure your have python installed or to check your python version run:
+To ensure your have Python/Pip installed or to check your Python/Pip version run:
 ```bash
 python --version
+pip --version
  ```
 
 2. Clone the project and go to the main folder:
