@@ -1,12 +1,16 @@
 import pygame
 
+from support import get_assets_dir
+
+
 class Weapon(pygame.sprite.Sprite):
     def __init__(self, player, groups: list[pygame.sprite.Group]):
         super().__init__(*groups)
         self.sprite_type = 'weapon'
+        self.z = player.z
         direction = player.status.split('_')[0]
 
-        full_path = f'../graphics/weapons/{player.weapon}/{direction}.png'
+        full_path = get_assets_dir() + f'graphics/weapons/{player.weapon}/{direction}.png'
         self.image = pygame.image.load(full_path).convert_alpha()
 
         if direction == 'right':

@@ -1,4 +1,5 @@
 from os import walk
+from os.path import normpath
 
 from pygame.image import load
 
@@ -12,4 +13,12 @@ def import_folder(path):
 
     return surf_list
 
-__all__ = ['import_folder']
+def norm_path(path):
+    """Not finished yet"""
+    return normpath(path)
+
+def get_assets_dir():
+    """Not finished yet"""
+    return '../assets/'
+
+__all__ = ['import_folder', 'norm_path', 'get_assets_dir']

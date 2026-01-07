@@ -2,43 +2,44 @@ from random import choice
 
 import pygame
 
-from support import import_folder
+from settings import LAYERS
+from support import import_folder, get_assets_dir
 
 class AnimationPlayer:
     def __init__(self):
         self.frames = {
             # magic
-            'flame': import_folder('../assets/graphics/particles/flame/frames'),
-            'aura': import_folder('../assets/graphics/particles/aura'),
-            'heal': import_folder('../assets/graphics/particles/heal/frames'),
+            'flame': import_folder(get_assets_dir() + 'graphics/particles/flame/frames'),
+            'aura': import_folder(get_assets_dir() + 'graphics/particles/aura'),
+            'heal': import_folder(get_assets_dir() + 'graphics/particles/heal/frames'),
 
             # attacks
-            'claw': import_folder('../assets/graphics/particles/claw'),
-            'slash': import_folder('../assets/graphics/particles/slash'),
-            'sparkle': import_folder('../assets/graphics/particles/sparkle'),
-            'leaf_attack': import_folder('../assets/graphics/particles/leaf_attack'),
-            'thunder': import_folder('../assets/graphics/particles/thunder'),
+            'claw': import_folder(get_assets_dir() + 'graphics/particles/claw'),
+            'slash': import_folder(get_assets_dir() + 'graphics/particles/slash'),
+            'sparkle': import_folder(get_assets_dir() + 'graphics/particles/sparkle'),
+            'leaf_attack': import_folder(get_assets_dir() + 'graphics/particles/leaf_attack'),
+            'thunder': import_folder(get_assets_dir() + 'graphics/particles/thunder'),
 
             # monster deaths
-            'squid': import_folder('../assets/graphics/particles/smoke_orange'),
-            'raccoon': import_folder('../assets/graphics/particles/raccoon'),
-            'spirit': import_folder('../assets/graphics/particles/nova'),
-            'bamboo': import_folder('../assets/graphics/particles/bamboo'),
+            'squid': import_folder(get_assets_dir() + 'graphics/particles/smoke_orange'),
+            'raccoon': import_folder(get_assets_dir() + 'graphics/particles/raccoon'),
+            'spirit': import_folder(get_assets_dir() + 'graphics/particles/nova'),
+            'bamboo': import_folder(get_assets_dir() + 'graphics/particles/bamboo'),
 
             # leafs
             'leaf': (
-                import_folder('../assets/graphics/particles/leaf1'),
-                import_folder('../assets/graphics/particles/leaf2'),
-                import_folder('../assets/graphics/particles/leaf3'),
-                import_folder('../assets/graphics/particles/leaf4'),
-                import_folder('../assets/graphics/particles/leaf5'),
-                import_folder('../assets/graphics/particles/leaf6'),
-                self.reflect_images(import_folder('../assets/graphics/particles/leaf1')),
-                self.reflect_images(import_folder('../assets/graphics/particles/leaf2')),
-                self.reflect_images(import_folder('../assets/graphics/particles/leaf3')),
-                self.reflect_images(import_folder('../assets/graphics/particles/leaf4')),
-                self.reflect_images(import_folder('../assets/graphics/particles/leaf5')),
-                self.reflect_images(import_folder('../assets/graphics/particles/leaf6'))
+                import_folder(get_assets_dir() + 'graphics/particles/leaf1'),
+                import_folder(get_assets_dir() + 'graphics/particles/leaf2'),
+                import_folder(get_assets_dir() + 'graphics/particles/leaf3'),
+                import_folder(get_assets_dir() + 'graphics/particles/leaf4'),
+                import_folder(get_assets_dir() + 'graphics/particles/leaf5'),
+                import_folder(get_assets_dir() + 'graphics/particles/leaf6'),
+                self.reflect_images(import_folder(get_assets_dir() + 'graphics/particles/leaf1')),
+                self.reflect_images(import_folder(get_assets_dir() + 'graphics/particles/leaf2')),
+                self.reflect_images(import_folder(get_assets_dir() + 'graphics/particles/leaf3')),
+                self.reflect_images(import_folder(get_assets_dir() + 'graphics/particles/leaf4')),
+                self.reflect_images(import_folder(get_assets_dir() + 'graphics/particles/leaf5')),
+                self.reflect_images(import_folder(get_assets_dir() + 'graphics/particles/leaf6'))
             )
         }
 
@@ -66,6 +67,7 @@ class ParticleEffect(pygame.sprite.Sprite):
         self.image = self.frames[self.frame_index]
         self.rect = self.image.get_rect(center=pos)
         self.sprite_type = 'magic'
+        self.z = LAYERS['main']
 
     def animate(self):
         self.frame_index += self.animation_speed

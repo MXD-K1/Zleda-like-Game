@@ -9,11 +9,11 @@ This game was developed following the **“Zelda-style RPG in Python with Pygame
 
 > - 🎥 **Tutorial Video:** [Go to Video](https://youtu.be/QU1pPzEGrqw)
 > - 📦 **Reference Tutorial Source:** [Go to Repo](https://github.com/clear-code-projects/Zelda) - released under the 
-Creative Commons Zero (CC0) license*
+*Creative Commons Zero (CC0) license*
 
 ### **Art and Audio Assets:**
 > **Assest Pack:** *[Ninja Adventure](https://pixel-boy.itch.io/ninja-adventure-asset-pack)* 
- by *Pixel-boy and AAA* — *under the Creative Commons Zero (CC0) license*
+ by *Pixel-boy and AAA* — *under the Creative Commons Zero (CC0) [license](docs/Ninja%20Adventure%20Asset%20Pack%20Docs/LICENSE.txt)*
 
 ## Getting Started
 These steps will get this project running locally on your machine.

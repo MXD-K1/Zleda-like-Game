@@ -1,15 +1,16 @@
 import pygame
 
 from settings import HITBOX_OFFSET
-from data import weapon_data, magic_data
+from data.data import weapon_data, magic_data
 from support import import_folder
 from entity import Entity
+from support import get_assets_dir
 
 class Player(Entity):
     def __init__(self, pos, groups, obstacle_sprites,
                  create_attack, destroy_attack, create_magic):
-        super().__init__(groups)
-        self.image = pygame.image.load('../assets/graphics/test/player.png').convert_alpha()
+        image = pygame.image.load(get_assets_dir() + 'graphics/player/down_idle/idle_down.png').convert_alpha()
+        super().__init__(groups, image)
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(-6, HITBOX_OFFSET['player'])
         self.obstacle_sprites = obstacle_sprites
@@ -51,11 +52,11 @@ class Player(Entity):
         self.hurt_time = None
         self.invulnerability_duration = 500
 
-        self.weapon_attack_sound = pygame.mixer.Sound('../assets/audio/sword.wav')
+        self.weapon_attack_sound = pygame.mixer.Sound(get_assets_dir() + 'audio/sword.wav')
         self.weapon_attack_sound.set_volume(0.4)
 
     def import_assets(self):
-        path = '../assets/graphics/player/'
+        path = get_assets_dir() + 'graphics/player/'
         self.animations = {
             'up': [], 'down': [], 'left': [], 'right': [],
             'right_idle': [], 'left_idle': [], 'up_idle': [], 'down_idle': [],

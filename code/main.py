@@ -3,8 +3,9 @@ import sys
 import pygame
 
 from settings import WIDTH, HEIGHT, FPS
-from color import WATER_COLOR
+from data.color import WATER_COLOR
 from level import Level
+from support import get_assets_dir
 
 # from debug import debug
 
@@ -18,7 +19,7 @@ class Game:
 
         self.level = Level()
 
-        main_sound = pygame.mixer.Sound('../assets/audio/main.ogg')
+        main_sound = pygame.mixer.Sound(get_assets_dir() + 'audio/main.ogg')
         main_sound.set_volume(0.5)
         main_sound.play(-1)
 

@@ -1,7 +1,7 @@
 import pygame
 
 from settings import UI_FONT, UI_FONT_SIZE
-from color import *
+from data.color import *
 
 
 class Upgrade:

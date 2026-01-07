@@ -1,17 +1,15 @@
 from random import randint
 
 import pygame
-from pytmx.util_pygame import load_pygame
 
 from ui import UI
-from settings import TILE_SIZE
-from tile import Tile
-from player import Player
+from settings import LAYERS
 from weapon import Weapon
-from enemy import Enemy
 from praticles import AnimationPlayer
 from magic import MagicPlayer
 from upgrade import Upgrade
+from map_loader import MapLoader
+from support import get_assets_dir
 
 # from debug import debug
 
@@ -28,8 +26,9 @@ class Level:
 
         # attack
         self.current_attack = None
-
-        self.create_map()
+        self.map_loader = MapLoader(self)
+        self.map_loader.load_map(get_assets_dir() + 'map/map.tmx')
+        self.player = self.map_loader.player
 
         self.ui = UI()
         self.upgrade = Upgrade(self.player)
@@ -37,32 +36,6 @@ class Level:
         # particles
         self.animation_player = AnimationPlayer()
         self.magic_player = MagicPlayer(self.animation_player)
-
-    # noinspection PyAttributeOutsideInit,PyTypeChecker,PyUnresolvedReferences
-    def create_map(self):
-        map_ = load_pygame('../assets/map/map.tmx')
-
-        for x, y, surf in map_.get_layer_by_name('Grass').tiles():
-            Tile((x * TILE_SIZE, y * TILE_SIZE),
-                 [self.visible_sprites, self.obstacle_sprites, self.attackable_sprites],
-                 'grass', surf)
-
-        for x, y, surf in map_.get_layer_by_name('Objects').tiles():
-            Tile((x * TILE_SIZE, y * TILE_SIZE), [self.visible_sprites, self.obstacle_sprites],
-                 'object', surf)
-
-        for x, y, surf in map_.get_layer_by_name('FloorBlocks').tiles():
-            Tile((x * TILE_SIZE, y * TILE_SIZE), [self.obstacle_sprites], 'invisible')
-
-        for obj in map_.get_layer_by_name('Entity-Pos'):
-            if obj.name == "player":
-                self.player = Player((obj.x, obj.y), [self.visible_sprites],
-                                     self.obstacle_sprites, self.create_attack, self.destroy_attack,
-                                     self.create_magic)
-            else:
-                Enemy(obj.name, (obj.x, obj.y), [self.visible_sprites, self.attackable_sprites],
-                      self.obstacle_sprites, self.damage_player, self.trigger_death_particles,
-                      self.add_exp)
 
     def create_attack(self):
         self.current_attack = Weapon(self.player, [self.visible_sprites, self.attack_sprites])
@@ -131,22 +104,17 @@ class CameraGroup(pygame.sprite.Group):
         self.half_width = self.display_surf.get_size()[0] // 2
         self.half_height = self.display_surf.get_size()[1] // 2
         self.offset = pygame.math.Vector2()
-
-        # floor
-        self.floor_surf = pygame.image.load('../assets/graphics/tilemap/ground.png').convert()
-        self.floor_rect = self.floor_surf.get_rect(topleft=(0, 0))
+        # draw order
 
     def custom_draw(self, player):
         self.offset.x = -(player.rect.centerx - self.half_width)
         self.offset.y = -(player.rect.centery - self.half_height)
 
-        # draw floor
-        floor_offset = -(self.floor_rect.topleft - self.offset)
-        self.display_surf.blit(self.floor_surf, floor_offset)
-
-        for sprite in sorted(self.sprites(), key=lambda s: s.rect.centery):
-            offset_pos = sprite.rect.topleft + self.offset
-            self.display_surf.blit(sprite.image, offset_pos)
+        for layer in LAYERS.values():
+            for sprite in sorted(self.sprites(), key=lambda s: s.rect.centery):
+                if sprite.z == layer:
+                    offset_pos = sprite.rect.topleft + self.offset
+                    self.display_surf.blit(sprite.image, offset_pos)
 
     def enemy_update(self, player):
         enemy_sprites = [sprite for sprite in self.sprites() if hasattr(sprite, 'sprite_type')

@@ -1,6 +1,9 @@
 # Controls
 
-**Arrow keys** — move character
-**Space** — attack
+- **Arrow Keys** — move character
+- **Space** — attack
+- **q** — change weapon
+- **e** — change spell
+- **ctrl** — cast spell
 
 > Note: Controls will be documented here later.
