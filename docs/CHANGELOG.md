@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Got rid of the logic to draw `ground.png` and deleted that image
 - Added layers logic to draw the objects correctly
 - Write docs
+- Added GitHub templates for `bug_report` and `feature_request`
 
 ## [0.1.0] - 2025-12-2
 - Initial release
