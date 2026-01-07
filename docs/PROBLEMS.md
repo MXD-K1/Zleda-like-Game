@@ -1,8 +1,10 @@
-#
+# Game Issues and Fixes
+This section lists the current problems in the game and the issues that have been resolved. 
+It helps track known bugs and improvements over time.
 
-## Problems:
-1. Game lagging every few minutes
+## Known Issues:
+1. Game lagging every few minutes (the screen stops for some milliseconds)
 2. Camera logic needs fix
 
-## Fixed Problems
+## Fixed Issues:
 1. Raccoon monster disappears in the winter biome
