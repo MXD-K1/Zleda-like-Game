@@ -19,7 +19,7 @@ This game was developed following the **“Zelda-style RPG in Python with Pygame
 These steps will get this project running locally on your machine.
 
 ### Requirements
-1. You need **Python 3.8** or higher and `pip` installed: 
+1. You need **Python 3.9** or higher and `pip` installed: 
 
 To ensure your have Python/Pip installed or to check your Python/Pip version run:
 ```bash

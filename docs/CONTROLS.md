@@ -1,9 +1,12 @@
 # Controls
+## Movement
+- **Arrow Keys** — Move the player
 
-- **Arrow Keys** — move character
-- **Space** — attack
-- **q** — change weapon
-- **e** — change spell
-- **ctrl** — cast spell
+## Combat
+- **Space** — Perform a basic attack
+- **Ctrl** — Cast the currently selected spell
 
-> Note: Controls will be documented here later.
+## Equipment & Abilities
+- **Q** — Cycle through available weapons
+- **E** — Cycle through available spells
+

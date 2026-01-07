@@ -4,8 +4,6 @@ Thanks for considering contributing! 🎉 Contributions of all kinds are welcome
 bug reports, feature ideas, tests, and discussions. This guide outlines how to get started and what we expect 
 from contributors so collaboration stays smooth and respectful.
 
-> Note: Contribution guides will be documented here later.
-
 ## How to Contribute
 
 We welcome contributions of all kinds: code, documentation, bug reports, feature ideas, tests, and discussions. 
