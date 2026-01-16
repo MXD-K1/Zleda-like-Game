@@ -3,53 +3,30 @@ from random import choice
 import pygame
 
 from settings import LAYERS
-from support import import_folder, get_assets_dir
 
 class AnimationPlayer:
-    def __init__(self):
+    def __init__(self, images):
         self.frames = {
-            # magic
-            'flame': import_folder(get_assets_dir() + 'graphics/particles/flame/frames'),
-            'aura': import_folder(get_assets_dir() + 'graphics/particles/aura'),
-            'heal': import_folder(get_assets_dir() + 'graphics/particles/heal/frames'),
+            'flame': images['flame'],
+            'aura': images['aura'],
+            'heal': images['heal'],
 
             # attacks
-            'claw': import_folder(get_assets_dir() + 'graphics/particles/claw'),
-            'slash': import_folder(get_assets_dir() + 'graphics/particles/slash'),
-            'sparkle': import_folder(get_assets_dir() + 'graphics/particles/sparkle'),
-            'leaf_attack': import_folder(get_assets_dir() + 'graphics/particles/leaf_attack'),
-            'thunder': import_folder(get_assets_dir() + 'graphics/particles/thunder'),
+            'claw': images['claw'],
+            'slash': images['slash'],
+            'sparkle': images['sparkle'],
+            'leaf_attack': images['leaf_attack'],
+            'thunder': images['thunder'],
 
             # monster deaths
-            'squid': import_folder(get_assets_dir() + 'graphics/particles/smoke_orange'),
-            'raccoon': import_folder(get_assets_dir() + 'graphics/particles/raccoon'),
-            'spirit': import_folder(get_assets_dir() + 'graphics/particles/nova'),
-            'bamboo': import_folder(get_assets_dir() + 'graphics/particles/bamboo'),
+            'squid': images['squid'],
+            'raccoon': images['raccoon'],
+            'spirit': images['spirit'],
+            'bamboo': images['bamboo'],
 
             # leafs
-            'leaf': (
-                import_folder(get_assets_dir() + 'graphics/particles/leaf1'),
-                import_folder(get_assets_dir() + 'graphics/particles/leaf2'),
-                import_folder(get_assets_dir() + 'graphics/particles/leaf3'),
-                import_folder(get_assets_dir() + 'graphics/particles/leaf4'),
-                import_folder(get_assets_dir() + 'graphics/particles/leaf5'),
-                import_folder(get_assets_dir() + 'graphics/particles/leaf6'),
-                self.reflect_images(import_folder(get_assets_dir() + 'graphics/particles/leaf1')),
-                self.reflect_images(import_folder(get_assets_dir() + 'graphics/particles/leaf2')),
-                self.reflect_images(import_folder(get_assets_dir() + 'graphics/particles/leaf3')),
-                self.reflect_images(import_folder(get_assets_dir() + 'graphics/particles/leaf4')),
-                self.reflect_images(import_folder(get_assets_dir() + 'graphics/particles/leaf5')),
-                self.reflect_images(import_folder(get_assets_dir() + 'graphics/particles/leaf6'))
-            )
+            'leaf': images['leaf']
         }
-
-    @staticmethod
-    def reflect_images(frames):
-        new_frames = []
-        for frame in frames:
-            flipped_frame = pygame.transform.flip(frame, True, False)
-            new_frames.append(flipped_frame)
-        return new_frames
 
     def create_grass_particles(self, pos, groups):
         animation_frames = choice(self.frames['leaf'])

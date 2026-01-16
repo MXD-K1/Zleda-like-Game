@@ -5,15 +5,18 @@ from data.data import weapon_data, magic_data
 from support import import_folder
 from entity import Entity
 from support import get_assets_dir
+from events import EventBus, Event
+
 
 class Player(Entity):
-    def __init__(self, pos, groups, obstacle_sprites,
-                 create_attack, destroy_attack, create_magic):
+    def __init__(self, pos, groups, obstacle_sprites, event_bus: EventBus):
         image = pygame.image.load(get_assets_dir() + 'graphics/player/down_idle/idle_down.png').convert_alpha()
         super().__init__(groups, image)
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(-6, HITBOX_OFFSET['player'])
         self.obstacle_sprites = obstacle_sprites
+
+        self.event_bus = event_bus
 
         # graphics
         self.import_assets()
@@ -23,8 +26,6 @@ class Player(Entity):
         self.attacking = False
         self.attack_cooldown = 400
         self.attack_time = 0  # or None
-        self.create_attack = create_attack
-        self.destroy_attack = destroy_attack
 
         self.weapon_index = 0
         self.weapon = list(weapon_data.keys())[self.weapon_index]
@@ -32,7 +33,6 @@ class Player(Entity):
         self.weapon_switch_time = None
         self.switch_duration_cooldown = 200
 
-        self.create_magic = create_magic
         self.magic_index = 0
         self.magic = list(magic_data.keys())[self.weapon_index]
         self.can_switch_magic = True
@@ -55,6 +55,7 @@ class Player(Entity):
         self.weapon_attack_sound = pygame.mixer.Sound(get_assets_dir() + 'audio/sword.wav')
         self.weapon_attack_sound.set_volume(0.4)
 
+    # noinspection PyAttributeOutsideInit
     def import_assets(self):
         path = get_assets_dir() + 'graphics/player/'
         self.animations = {
@@ -93,17 +94,19 @@ class Player(Entity):
             if keys[pygame.K_SPACE] and not self.attacking:
                 self.attacking = True
                 self.attack_time = pygame.time.get_ticks()
-                self.create_attack()
+                self.event_bus.emit(Event.CREATE_ATTACK)
                 self.weapon_attack_sound.play()
 
             # magic
             if keys[pygame.K_LCTRL] and not self.attacking:
                 self.attacking = True
                 self.attack_time = pygame.time.get_ticks()
+
                 style = list(magic_data.keys())[self.magic_index]
                 strength = list(magic_data.values())[self.magic_index]['strength'] + self.stats['magic']
                 cost = list(magic_data.values())[self.magic_index]['cost']
-                self.create_magic(style, strength, cost)
+
+                self.event_bus.emit(Event.CAST_MAGIC, style=style, strength=strength, cost=cost)
 
             if keys[pygame.K_q] and self.can_switch_weapon:
                 self.can_switch_weapon = False
@@ -124,7 +127,6 @@ class Player(Entity):
                 self.magic = list(magic_data.keys())[self.magic_index]
 
     def get_status(self):
-
         if self.direction.x == 0 and self.direction.y == 0:
             if 'idle' not in self.status and 'attack' not in self.status:
                 self.status = self.status + '_idle'
@@ -145,7 +147,7 @@ class Player(Entity):
         if self.attacking:
             if current_time - self.attack_time >= self.attack_cooldown + weapon_data[self.weapon]['cooldown']:
                 self.attacking = False
-                self.destroy_attack()
+                self.event_bus.emit(Event.DESTROY_ATTACK)
 
         if not self.can_switch_weapon:
             if current_time - self.weapon_switch_time >= self.switch_duration_cooldown:
@@ -175,6 +177,15 @@ class Player(Entity):
             self.image.set_alpha(alpha)
         else:
             self.image.set_alpha(255)
+
+    def get_direction(self):
+        return self.status.split('_')[0]
+
+    def get_rect(self):
+        return self.rect
+
+    def get_weapon(self):
+        return self.weapon
 
     def get_full_weapon_damage(self):
         base_damage = self.stats['attack']

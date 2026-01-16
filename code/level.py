@@ -10,12 +10,17 @@ from magic import MagicPlayer
 from upgrade import Upgrade
 from map_loader import MapLoader
 from support import get_assets_dir
+from events import EventBus, Event
+from data.images import load_images
 
 # from debug import debug
 
 class Level:
     def __init__(self):
+        images = load_images()
+
         self.display_surf = pygame.display.get_surface()
+        self.event_bus = EventBus()
         self.game_paused = False
 
         # sprite groups
@@ -34,11 +39,19 @@ class Level:
         self.upgrade = Upgrade(self.player)
 
         # particles
-        self.animation_player = AnimationPlayer()
+        self.animation_player = AnimationPlayer(images)
         self.magic_player = MagicPlayer(self.animation_player)
 
+        # events
+        self.event_bus.subscribe(Event.CREATE_ATTACK, self.create_attack)
+        self.event_bus.subscribe(Event.DESTROY_ATTACK, self.destroy_attack)
+        self.event_bus.subscribe(Event.CAST_MAGIC, self.create_magic)
+        self.event_bus.subscribe(Event.GET_PLAYER_DIRECTION, self.player.get_direction)
+        self.event_bus.subscribe(Event.GET_PLAYER_RECT, self.player.get_rect)
+        self.event_bus.subscribe(Event.GET_PLAYER_WEAPON, self.player.get_weapon)
+
     def create_attack(self):
-        self.current_attack = Weapon(self.player, [self.visible_sprites, self.attack_sprites])
+        self.current_attack = Weapon([self.visible_sprites, self.attack_sprites], self.event_bus)
 
     def create_magic(self, style, strength, cost):
         if style == 'heal':
