@@ -40,8 +40,7 @@ class MapLoader:
         for obj in map_.get_layer_by_name('Entity-Pos'):
             if obj.name == "player":
                 self.player = Player((obj.x, obj.y), [self.level.visible_sprites],
-                                     self.level.obstacle_sprites, self.level.create_attack,
-                                     self.level.destroy_attack, self.level.create_magic)
+                                     self.level.obstacle_sprites, self.level.event_bus)
             else:
                 Enemy(obj.name, (obj.x, obj.y), [self.level.visible_sprites, self.level.attackable_sprites],
                       self.level.obstacle_sprites, self.level.damage_player, self.level.trigger_death_particles,

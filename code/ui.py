@@ -65,7 +65,7 @@ class UI:
             pygame.draw.rect(self.display_surf, UI_BORDER_COLOR, bg_rect, 3)
         return bg_rect
 
-    def display(self, player):
+    def display(self, player):  # TODO: get rid of the player arg
         self.show_bar(player.health, player.stats['health'], self.health_bar_rect, HEALTH_COLOR)
         self.show_bar(player.energy, player.stats['energy'], self.energy_bar_rect, ENERGY_COLOR)
         self.show_exp(player.exp)
