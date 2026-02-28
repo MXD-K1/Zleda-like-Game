@@ -1,10 +1,11 @@
-from support import get_assets_dir
+from code.utils.utils import get_assets_dir
 
 # game setup
-WIDTH = 1280
-HEIGHT = 720
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 FPS = 60
 TILE_SIZE = 64
+
 HITBOX_OFFSET = {
     'player': -26,
     'object': -40,

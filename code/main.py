@@ -2,10 +2,10 @@ import sys
 
 import pygame
 
-from settings import WIDTH, HEIGHT, FPS
+from settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
 from data.color import WATER_COLOR
 from level import Level
-from support import get_assets_dir
+
 
 # from debug import debug
 
@@ -13,15 +13,10 @@ class Game:
     def __init__(self):
         # general setup
         pygame.init()
-        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption('Zelda')
         self.clock = pygame.time.Clock()
-
         self.level = Level()
-
-        main_sound = pygame.mixer.Sound(get_assets_dir() + 'audio/main.ogg')
-        main_sound.set_volume(0.5)
-        main_sound.play(-1)
 
     def run(self):
         while True:

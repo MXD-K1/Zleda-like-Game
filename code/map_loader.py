@@ -16,7 +16,7 @@ class MapLoader:
         for group in self.groups:
             group.empty()
 
-    # noinspection PyAttributeOutsideInit,PyTypeChecker,PyUnresolvedReferences
+    # noinspection PyTypeChecker,PyUnresolvedReferences
     def load_map(self, map_path):
         self.empty_groups()
         map_ = load_pygame(map_path)

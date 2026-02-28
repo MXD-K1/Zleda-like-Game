@@ -9,7 +9,7 @@ from praticles import AnimationPlayer
 from magic import MagicPlayer
 from upgrade import Upgrade
 from map_loader import MapLoader
-from support import get_assets_dir
+from code.utils.utils import get_assets_dir
 from events import EventBus, Event
 from data.images import load_images
 
@@ -35,20 +35,39 @@ class Level:
         self.map_loader.load_map(get_assets_dir() + 'map/map.tmx')
         self.player = self.map_loader.player
 
-        self.ui = UI()
+        self.ui = UI(self.event_bus)
         self.upgrade = Upgrade(self.player)
+        self.should_display_start_screen = False
 
         # particles
         self.animation_player = AnimationPlayer(images)
         self.magic_player = MagicPlayer(self.animation_player)
 
         # events
+        self.subscribe_events()
+
+        # sound
+        self.background_sound = pygame.mixer.Sound(get_assets_dir() + 'audio/main.ogg')
+        self.background_sound.set_volume(0.5)
+        self.background_sound.play(-1)
+
+    def load_game(self):
+        pass
+
+    def display_start_screen(self):
+        self.display_surf.fill((50, 50, 50))
+
+    def subscribe_events(self):
         self.event_bus.subscribe(Event.CREATE_ATTACK, self.create_attack)
         self.event_bus.subscribe(Event.DESTROY_ATTACK, self.destroy_attack)
         self.event_bus.subscribe(Event.CAST_MAGIC, self.create_magic)
         self.event_bus.subscribe(Event.GET_PLAYER_DIRECTION, self.player.get_direction)
         self.event_bus.subscribe(Event.GET_PLAYER_RECT, self.player.get_rect)
         self.event_bus.subscribe(Event.GET_PLAYER_WEAPON, self.player.get_weapon)
+        self.event_bus.subscribe(Event.GET_PLAYER_EXP, self.player.get_exp)
+        self.event_bus.subscribe(Event.GET_PLAYER_HEALTH, self.player.get_health)
+        self.event_bus.subscribe(Event.GET_PLAYER_ENERGY, self.player.get_energy)
+        self.event_bus.subscribe(Event.GET_PLAYER_STATS, self.player.get_stats)
 
     def create_attack(self):
         self.current_attack = Weapon([self.visible_sprites, self.attack_sprites], self.event_bus)
@@ -99,15 +118,19 @@ class Level:
         self.game_paused = not self.game_paused
 
     def run(self):
-        self.visible_sprites.custom_draw(self.player)
-        self.ui.display(self.player)
+        if not self.should_display_start_screen:
+            self.visible_sprites.custom_draw(self.player)
+            self.ui.display(self.player)
 
-        if self.game_paused:
-            self.upgrade.display()
+            if self.game_paused:
+                self.upgrade.display()
+            else:
+                self.visible_sprites.update()
+                self.visible_sprites.enemy_update(self.player)
+                self.player_attack_logic()
         else:
-            self.visible_sprites.update()
-            self.visible_sprites.enemy_update(self.player)
-            self.player_attack_logic()
+            self.background_sound.stop()  # make sure it plays again when the game loads
+            self.display_start_screen()
 
 
 class CameraGroup(pygame.sprite.Group):

@@ -2,12 +2,12 @@ import pygame
 
 from data.data import monster_data
 from entity import Entity
-from support import *
+from code.utils.utils import *
+
 
 class Enemy(Entity):
     def __init__(self, monster_name, pos, groups, obstacle_sprites,
                  damage_player, trigger_death_particles, add_exp):
-
         self.import_graphics(monster_name)
         super().__init__(groups, self.animations['idle'][0])
         self.sprite_type = 'enemy'
@@ -19,7 +19,18 @@ class Enemy(Entity):
         self.hitbox = self.rect.inflate(0, -10)
         self.obstacle_sprites = obstacle_sprites
 
-        # stats
+        monster_info = self._load_monster_stats(monster_name)
+        self._init_combat_state()
+        self._init_invincibility_state()
+
+        self.damage_player = damage_player
+
+        self.trigger_death_particles = trigger_death_particles
+        self.add_exp = add_exp
+
+        self._init_sounds(monster_info)
+
+    def _load_monster_stats(self, monster_name):
         self.monster_name = monster_name
         monster_info = monster_data[self.monster_name]
         self.health = monster_info['health']
@@ -30,21 +41,19 @@ class Enemy(Entity):
         self.attack_radius = monster_info['attack_radius']
         self.notice_radius = monster_info['notice_radius']
         self.attack_type = monster_info['attack_type']
+        return monster_info
 
+    def _init_combat_state(self):
         self.can_attack = True
         self.attack_time = None
         self.attack_cooldown = 400
-        self.damage_player = damage_player
 
-        # invincibility timer
+    def _init_invincibility_state(self):
         self.vulnerable = True
         self.hit_time = None
         self.invincibility_duration = 300
 
-        self.trigger_death_particles = trigger_death_particles
-        self.add_exp = add_exp
-
-        # sounds
+    def _init_sounds(self, monster_info):
         self.death_sound = pygame.mixer.Sound(get_assets_dir() + 'audio/death.wav')
         self.hit_sound = pygame.mixer.Sound(get_assets_dir() + 'audio/hit.wav')
         self.attack_sound = pygame.mixer.Sound(monster_info['attack_sound'])
@@ -52,7 +61,6 @@ class Enemy(Entity):
         self.hit_sound.set_volume(0.6)
         self.attack_sound.set_volume(0.3)
 
-    # noinspection PyAttributeOutsideInit
     def import_graphics(self, name):
         self.animations = {'idle': [], 'move': [], 'attack': []}
         main_path = get_assets_dir() + f'graphics/monsters/{name}/'
@@ -71,8 +79,7 @@ class Enemy(Entity):
 
         return distance, direction
 
-    def get_status(self, player):
-        distance = self.get_player_distance_and_direction(player)[0]
+    def get_status(self, distance):
         if distance <= self.attack_radius and self.can_attack:
             if self.status != 'attack':
                 self.frame_index = 0
@@ -82,14 +89,14 @@ class Enemy(Entity):
         else:
             self.status = 'idle'
 
-    def actions(self, player):
+    def actions(self, direction):
         if self.status == 'attack':
             self.attack_time = pygame.time.get_ticks()
             self.damage_player(self.attack_damage, self.attack_type)
             self.attack_sound.play()
 
         elif self.status == 'move':
-            self.direction = self.get_player_distance_and_direction(player)[1]
+            self.direction = direction
         else:
             self.direction = pygame.math.Vector2()
 
@@ -152,5 +159,6 @@ class Enemy(Entity):
         self.check_death()
 
     def enemy_update(self, player):
-        self.get_status(player)
-        self.actions(player)
+        distance, direction = self.get_player_distance_and_direction(player)
+        self.get_status(distance)
+        self.actions(direction)

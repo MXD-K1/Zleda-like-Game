@@ -1,4 +1,4 @@
-from code.support import *
+from code.utils.utils import *
 
 def load_images():
     images = {

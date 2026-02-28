@@ -1,4 +1,4 @@
-# Zleda-like-Game
+# Zelda-like-Game
 A **2D top-down adventure game** built with **Python** and **Pygame**, inspired by classic Zelda-style gameplay.
 This project was made purely for fun and personal practice in game development, following 
 the [**“Zelda-style RPG with Python and Pygame”** tutorial by *Clear Code*](https://youtu.be/QU1pPzEGrqw).

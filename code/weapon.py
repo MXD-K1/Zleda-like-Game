@@ -1,7 +1,7 @@
 import pygame
 
 from events import EventBus, Event
-from support import get_assets_dir
+from code.utils.utils import get_assets_dir
 from settings import LAYERS
 
 

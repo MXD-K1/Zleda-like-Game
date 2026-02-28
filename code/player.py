@@ -2,9 +2,8 @@ import pygame
 
 from settings import HITBOX_OFFSET
 from data.data import weapon_data, magic_data
-from support import import_folder
+from utils.utils import import_folder, get_assets_dir
 from entity import Entity
-from support import get_assets_dir
 from events import EventBus, Event
 
 
@@ -178,6 +177,14 @@ class Player(Entity):
         else:
             self.image.set_alpha(255)
 
+    def energy_recovery(self):
+        if self.energy < self.stats['energy']:
+            self.energy += 0.002 * self.stats['magic']
+        else:
+            self.energy = self.stats['energy']
+
+    # ---------- Getters -------------
+
     def get_direction(self):
         return self.status.split('_')[0]
 
@@ -186,6 +193,18 @@ class Player(Entity):
 
     def get_weapon(self):
         return self.weapon
+
+    def get_exp(self):
+        return self.exp
+
+    def get_health(self):
+        return self.health
+
+    def get_energy(self):
+        return self.energy
+
+    def get_stats(self):
+        return self.stats
 
     def get_full_weapon_damage(self):
         base_damage = self.stats['attack']
@@ -203,11 +222,7 @@ class Player(Entity):
     def get_cost_by_index(self, index):
         return list(self.upgrade_cost.values())[index]
 
-    def energy_recovery(self):
-        if self.energy < self.stats['energy']:
-            self.energy += 0.002 * self.stats['magic']
-        else:
-            self.energy = self.stats['energy']
+    # --------------------------------
 
     def update(self):
         self.input()

@@ -1,14 +1,16 @@
 import pygame
 
+from events import Event, EventBus
 from settings import *
 from data.data import weapon_data, magic_data
 from data.color import *
 
 
 class UI:
-    def __init__(self):
+    def __init__(self, event_bus: EventBus):
         self.display_surf = pygame.display.get_surface()
         self.font = pygame.font.Font(UI_FONT, UI_FONT_SIZE)
+        self.event_bus = event_bus
 
         # bar setup
         self.health_bar_rect = pygame.Rect(10, 10, HEALTH_BAR_WIDTH, BAR_HEIGHT)
@@ -65,9 +67,11 @@ class UI:
             pygame.draw.rect(self.display_surf, UI_BORDER_COLOR, bg_rect, 3)
         return bg_rect
 
-    def display(self, player):  # TODO: get rid of the player arg
-        self.show_bar(player.health, player.stats['health'], self.health_bar_rect, HEALTH_COLOR)
-        self.show_bar(player.energy, player.stats['energy'], self.energy_bar_rect, ENERGY_COLOR)
-        self.show_exp(player.exp)
+    def display(self, player):
+        # TODO: get rid of the player arg
+        player_stats = self.event_bus.emit(Event.GET_PLAYER_STATS)
+        self.show_bar(self.event_bus.emit(Event.GET_PLAYER_HEALTH), player_stats['health'], self.health_bar_rect, HEALTH_COLOR)
+        self.show_bar(self.event_bus.emit(Event.GET_PLAYER_ENERGY), player_stats['energy'], self.energy_bar_rect, ENERGY_COLOR)
+        self.show_exp(self.event_bus.emit(Event.GET_PLAYER_EXP))
         self.weapon_overlay(player.weapon_index, player.can_switch_weapon)
         self.magic_overlay(player.magic_index, player.can_switch_magic)
