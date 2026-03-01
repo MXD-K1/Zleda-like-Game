@@ -1,8 +1,8 @@
 import pygame
 
-from data.data import monster_data
-from entity import Entity
-from code.utils.utils import *
+from zelda.data.data import monster_data
+from zelda.entity import Entity
+from zelda.utils.utils import *
 
 
 class Enemy(Entity):

@@ -1,7 +1,7 @@
 import pygame
 
-from settings import UI_FONT, UI_FONT_SIZE
-from data.color import *
+from zelda.settings import UI_FONT, UI_FONT_SIZE
+from zelda.data.color import *
 
 
 class Upgrade:

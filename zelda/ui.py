@@ -1,9 +1,9 @@
 import pygame
 
-from events import Event, EventBus
-from settings import *
-from data.data import weapon_data, magic_data
-from data.color import *
+from zelda.events import Event, EventBus
+from zelda.settings import *
+from zelda.data.data import weapon_data, magic_data
+from zelda.data.color import *
 
 
 class UI:

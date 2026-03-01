@@ -2,8 +2,8 @@ from random import randint
 
 import pygame
 
-from settings import *
-from code.utils.utils import get_assets_dir
+from zelda.settings import *
+from zelda.utils.utils import get_assets_dir
 
 class MagicPlayer:
     def __init__(self, animation_player):

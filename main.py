@@ -2,10 +2,10 @@ import sys
 
 import pygame
 
-from settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
-from data.color import WATER_COLOR
-from level import Level
-
+from zelda.settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
+from zelda.data.color import WATER_COLOR
+from zelda.level import Level
+from zelda.data.font import init_fonts
 
 # from debug import debug
 
@@ -13,6 +13,7 @@ class Game:
     def __init__(self):
         # general setup
         pygame.init()
+        init_fonts()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption('Zelda')
         self.clock = pygame.time.Clock()

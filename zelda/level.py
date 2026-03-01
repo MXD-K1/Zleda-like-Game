@@ -2,16 +2,16 @@ from random import randint
 
 import pygame
 
-from ui import UI
-from settings import LAYERS
-from weapon import Weapon
-from praticles import AnimationPlayer
-from magic import MagicPlayer
-from upgrade import Upgrade
-from map_loader import MapLoader
-from code.utils.utils import get_assets_dir
-from events import EventBus, Event
-from data.images import load_images
+from zelda.ui import UI
+from zelda.settings import LAYERS
+from zelda.weapon import Weapon
+from zelda.praticles import AnimationPlayer
+from zelda.magic import MagicPlayer
+from zelda.upgrade import Upgrade
+from zelda.map_loader import MapLoader
+from zelda.utils.utils import get_assets_dir
+from zelda.events import EventBus, Event
+from zelda.data.images import load_images
 
 # from debug import debug
 

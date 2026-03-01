@@ -1,11 +1,10 @@
 import pygame
 
-from settings import HITBOX_OFFSET
-from data.data import weapon_data, magic_data
-from utils.utils import import_folder, get_assets_dir
-from entity import Entity
-from events import EventBus, Event
-
+from zelda.settings import HITBOX_OFFSET
+from zelda.data.data import weapon_data, magic_data
+from zelda.utils.utils import import_folder, get_assets_dir
+from zelda.entity import Entity
+from zelda.events import EventBus, Event
 
 class Player(Entity):
     def __init__(self, pos, groups, obstacle_sprites, event_bus: EventBus):
@@ -14,7 +13,6 @@ class Player(Entity):
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(-6, HITBOX_OFFSET['player'])
         self.obstacle_sprites = obstacle_sprites
-
         self.event_bus = event_bus
 
         # graphics

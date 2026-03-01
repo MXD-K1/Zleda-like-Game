@@ -1,4 +1,4 @@
-from code.utils.utils import get_assets_dir
+from zelda.utils.utils import get_assets_dir
 
 # game setup
 SCREEN_WIDTH = 1280

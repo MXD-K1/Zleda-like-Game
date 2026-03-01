@@ -46,7 +46,7 @@ def norm_path(path):
 
 def get_assets_dir():
     """Not finished yet"""
-    return '../assets/'
+    return 'assets/'
 
 __all__ = ['import_folder', 'import_folder_dict', 'import_folders_of_folder_dict', 'norm_path', 'get_assets_dir',
            'reflect_images']

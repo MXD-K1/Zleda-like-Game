@@ -2,7 +2,7 @@ from random import choice
 
 import pygame
 
-from settings import LAYERS
+from zelda.settings import LAYERS
 
 class AnimationPlayer:
     def __init__(self, images):
