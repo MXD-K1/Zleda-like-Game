@@ -1,3 +1,5 @@
+import sys
+import logging
 from random import randint
 
 import pygame
@@ -13,14 +15,15 @@ from zelda.utils.utils import get_assets_dir
 from zelda.events import EventBus, Event
 from zelda.data.images import load_images
 from zelda.data.sounds import load_sounds, sounds
-
+from zelda.data.fonts import init_fonts
 
 # from debug import debug
 
+logger = logging.getLogger(__name__)
+
 class Level:
     def __init__(self):
-        images = load_images()
-        load_sounds()
+        self.load_game()
 
         self.display_surf = pygame.display.get_surface()
         self.event_bus = EventBus()
@@ -35,7 +38,13 @@ class Level:
         # attack
         self.current_attack = None
         self.map_loader = MapLoader(self)
-        self.map_loader.load_map(get_assets_dir() + 'map/map.tmx')
+        try:
+            self.map_loader.load_map(get_assets_dir() + 'map/map.tmx')
+        except pygame.error:
+            logger.error(f'Could not load map. Error: {pygame.error}')
+            pygame.quit()
+            sys.exit()
+
         self.player = self.map_loader.player
 
         self.ui = UI(self.event_bus)
@@ -43,7 +52,7 @@ class Level:
         self.should_display_start_screen = False
 
         # particles
-        self.animation_player = AnimationPlayer(images)
+        self.animation_player = AnimationPlayer(self.images)
         self.magic_player = MagicPlayer(self.animation_player)
 
         # events
@@ -55,7 +64,32 @@ class Level:
         self.background_sound.play(-1)
 
     def load_game(self):
-        pass
+        try:
+            self.images = load_images()
+        except pygame.error as e:
+            logger.error(f'Could not load images. Error: {e}')
+            pygame.quit()
+            sys.exit()
+        else:
+            logger.info('Loaded images successfully')
+
+        try:
+            load_sounds()
+        except pygame.error as e:
+            logger.error(f'Could not load sounds. Error: {e}')
+            pygame.quit()
+            sys.exit()
+        else:
+            logger.info('Loaded sounds successfully')
+
+        try:
+            init_fonts()
+        except pygame.error as e:
+            logger.error(f'Could not load fonts. Error: {e}')
+            pygame.quit()
+            sys.exit()
+        else:
+            logger.info('Loaded fonts successfully')
 
     def display_start_screen(self):
         self.display_surf.fill((50, 50, 50))

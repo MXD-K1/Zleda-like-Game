@@ -6,7 +6,7 @@ sounds = {}
 
 def load_sounds():
     loaded_sounds = {
-        'bacground': mixer.Sound(get_assets_dir() + 'audio/main.ogg'),
+        'background': mixer.Sound(get_assets_dir() + 'audio/main.ogg'),
         'heal': mixer.Sound(get_assets_dir() + 'audio/heal.wav'),
         'flame': mixer.Sound(get_assets_dir() + 'audio/flame.wav'),
         'attack': mixer.Sound(get_assets_dir() + 'audio/sword.wav'),
