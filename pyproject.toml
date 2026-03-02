@@ -1,0 +1,6 @@
+[project]
+name = "ZeldaGame"
+version = "0.1.0"
+description = "Zelda Like Game"
+requires-python = ">=3.12"
+dependencies = []

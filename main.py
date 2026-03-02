@@ -2,10 +2,11 @@ import sys
 
 import pygame
 
-from settings import WIDTH, HEIGHT, FPS
-from data.color import WATER_COLOR
-from level import Level
-from support import get_assets_dir
+from zelda.settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
+from zelda.data.color import WATER_COLOR
+from zelda.data.controls import *
+from zelda.level import Level
+from zelda.data.fonts import init_fonts
 
 # from debug import debug
 
@@ -13,15 +14,11 @@ class Game:
     def __init__(self):
         # general setup
         pygame.init()
-        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        init_fonts()
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption('Zelda')
         self.clock = pygame.time.Clock()
-
         self.level = Level()
-
-        main_sound = pygame.mixer.Sound(get_assets_dir() + 'audio/main.ogg')
-        main_sound.set_volume(0.5)
-        main_sound.play(-1)
 
     def run(self):
         while True:
@@ -31,7 +28,7 @@ class Game:
                     sys.exit()
 
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_m:
+                    if event.key == CONTROLS[Controls.TOGGLE_MENU]:
                         self.level.toggle_menu()
 
             self.screen.fill(WATER_COLOR)

@@ -2,7 +2,7 @@ from math import sin
 
 import pygame
 
-from settings import LAYERS
+from zelda.settings import LAYERS
 
 
 class Entity(pygame.sprite.Sprite):

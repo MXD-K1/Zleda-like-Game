@@ -1,8 +1,8 @@
 import pygame
 
-from events import EventBus, Event
-from support import get_assets_dir
-from settings import LAYERS
+from zelda.events import EventBus, Event
+from zelda.utils.utils import get_assets_dir
+from zelda.settings import LAYERS
 
 
 class Weapon(pygame.sprite.Sprite):
@@ -12,9 +12,9 @@ class Weapon(pygame.sprite.Sprite):
         self.z = LAYERS['main']
         self.event_bus = event_bus
 
-        direction = self.event_bus.emit(Event.GET_PLAYER_DIRECTION)
-        player_weapon = self.event_bus.emit(Event.GET_PLAYER_WEAPON)
-        player_rect = self.event_bus.emit(Event.GET_PLAYER_RECT)
+        direction = self.event_bus.publish(Event.GET_PLAYER_DIRECTION)
+        player_weapon = self.event_bus.publish(Event.GET_PLAYER_WEAPON)
+        player_rect = self.event_bus.publish(Event.GET_PLAYER_RECT)
 
         full_path = get_assets_dir() + f'graphics/weapons/{player_weapon}/{direction}.png'
         self.image = pygame.image.load(full_path).convert_alpha()

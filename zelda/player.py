@@ -1,12 +1,12 @@
 import pygame
 
-from settings import HITBOX_OFFSET
-from data.data import weapon_data, magic_data
-from support import import_folder
-from entity import Entity
-from support import get_assets_dir
-from events import EventBus, Event
-
+from zelda.data.sounds import sounds
+from zelda.settings import HITBOX_OFFSET
+from zelda.data.data import weapon_data, magic_data
+from zelda.utils.utils import import_folder, get_assets_dir
+from zelda.data.controls import *
+from zelda.entity import Entity
+from zelda.events import EventBus, Event
 
 class Player(Entity):
     def __init__(self, pos, groups, obstacle_sprites, event_bus: EventBus):
@@ -15,7 +15,6 @@ class Player(Entity):
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(-6, HITBOX_OFFSET['player'])
         self.obstacle_sprites = obstacle_sprites
-
         self.event_bus = event_bus
 
         # graphics
@@ -52,7 +51,7 @@ class Player(Entity):
         self.hurt_time = None
         self.invulnerability_duration = 500
 
-        self.weapon_attack_sound = pygame.mixer.Sound(get_assets_dir() + 'audio/sword.wav')
+        self.weapon_attack_sound = sounds['attack']
         self.weapon_attack_sound.set_volume(0.4)
 
     # noinspection PyAttributeOutsideInit
@@ -72,33 +71,33 @@ class Player(Entity):
 
         if not self.attacking:
             # movement
-            if keys[pygame.K_UP]:
+            if keys[CONTROLS[Controls.UP]]:
                 self.direction.y = -1
                 self.status = 'up'
-            elif keys[pygame.K_DOWN]:
+            elif keys[CONTROLS[Controls.DOWN]]:
                 self.direction.y = 1
                 self.status = 'down'
             else:
                 self.direction.y = 0
 
-            if keys[pygame.K_RIGHT]:
+            if keys[CONTROLS[Controls.RIGHT]]:
                 self.direction.x = 1
                 self.status = 'right'
-            elif keys[pygame.K_LEFT]:
+            elif keys[CONTROLS[Controls.LEFT]]:
                 self.direction.x = -1
                 self.status = 'left'
             else:
                 self.direction.x = 0
 
             # attack
-            if keys[pygame.K_SPACE] and not self.attacking:
+            if keys[CONTROLS[Controls.ATTACK_ACTION]] and not self.attacking:
                 self.attacking = True
                 self.attack_time = pygame.time.get_ticks()
-                self.event_bus.emit(Event.CREATE_ATTACK)
+                self.event_bus.publish(Event.CREATE_ATTACK)
                 self.weapon_attack_sound.play()
 
             # magic
-            if keys[pygame.K_LCTRL] and not self.attacking:
+            if keys[CONTROLS[Controls.CAST_ACTION]] and not self.attacking:
                 self.attacking = True
                 self.attack_time = pygame.time.get_ticks()
 
@@ -106,9 +105,9 @@ class Player(Entity):
                 strength = list(magic_data.values())[self.magic_index]['strength'] + self.stats['magic']
                 cost = list(magic_data.values())[self.magic_index]['cost']
 
-                self.event_bus.emit(Event.CAST_MAGIC, style=style, strength=strength, cost=cost)
+                self.event_bus.publish(Event.CAST_MAGIC, style=style, strength=strength, cost=cost)
 
-            if keys[pygame.K_q] and self.can_switch_weapon:
+            if keys[CONTROLS[Controls.SWITCH_WEAPON_ACTION]] and self.can_switch_weapon:
                 self.can_switch_weapon = False
                 self.weapon_switch_time = pygame.time.get_ticks()
                 if self.weapon_index < len(list(weapon_data.keys())) - 1:
@@ -117,7 +116,7 @@ class Player(Entity):
                     self.weapon_index = 0
                 self.weapon = list(weapon_data.keys())[self.weapon_index]
 
-            if keys[pygame.K_e] and self.can_switch_magic:
+            if keys[CONTROLS[Controls.SWITCH_SPELL_ACTION]] and self.can_switch_magic:
                 self.can_switch_magic = False
                 self.magic_switch_time = pygame.time.get_ticks()
                 if self.magic_index < len(list(magic_data.keys())) - 1:
@@ -147,7 +146,7 @@ class Player(Entity):
         if self.attacking:
             if current_time - self.attack_time >= self.attack_cooldown + weapon_data[self.weapon]['cooldown']:
                 self.attacking = False
-                self.event_bus.emit(Event.DESTROY_ATTACK)
+                self.event_bus.publish(Event.DESTROY_ATTACK)
 
         if not self.can_switch_weapon:
             if current_time - self.weapon_switch_time >= self.switch_duration_cooldown:
@@ -178,6 +177,17 @@ class Player(Entity):
         else:
             self.image.set_alpha(255)
 
+    def energy_recovery(self):
+        if self.energy < self.stats['energy']:
+            self.energy += 0.002 * self.stats['magic']
+        else:
+            self.energy = self.stats['energy']
+
+    def add_exp(self, amount):
+        self.exp += amount
+
+    # ---------- Getters -------------
+
     def get_direction(self):
         return self.status.split('_')[0]
 
@@ -186,6 +196,18 @@ class Player(Entity):
 
     def get_weapon(self):
         return self.weapon
+
+    def get_exp(self):
+        return self.exp
+
+    def get_health(self):
+        return self.health
+
+    def get_energy(self):
+        return self.energy
+
+    def get_stats(self):
+        return self.stats
 
     def get_full_weapon_damage(self):
         base_damage = self.stats['attack']
@@ -203,11 +225,7 @@ class Player(Entity):
     def get_cost_by_index(self, index):
         return list(self.upgrade_cost.values())[index]
 
-    def energy_recovery(self):
-        if self.energy < self.stats['energy']:
-            self.energy += 0.002 * self.stats['magic']
-        else:
-            self.energy = self.stats['energy']
+    # --------------------------------
 
     def update(self):
         self.input()
