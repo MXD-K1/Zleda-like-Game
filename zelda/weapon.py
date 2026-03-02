@@ -12,9 +12,9 @@ class Weapon(pygame.sprite.Sprite):
         self.z = LAYERS['main']
         self.event_bus = event_bus
 
-        direction = self.event_bus.emit(Event.GET_PLAYER_DIRECTION)
-        player_weapon = self.event_bus.emit(Event.GET_PLAYER_WEAPON)
-        player_rect = self.event_bus.emit(Event.GET_PLAYER_RECT)
+        direction = self.event_bus.publish(Event.GET_PLAYER_DIRECTION)
+        player_weapon = self.event_bus.publish(Event.GET_PLAYER_WEAPON)
+        player_rect = self.event_bus.publish(Event.GET_PLAYER_RECT)
 
         full_path = get_assets_dir() + f'graphics/weapons/{player_weapon}/{direction}.png'
         self.image = pygame.image.load(full_path).convert_alpha()

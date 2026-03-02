@@ -1,7 +1,8 @@
 import pygame
 
-from zelda.settings import UI_FONT, UI_FONT_SIZE
+from zelda.data.fonts import get_font
 from zelda.data.color import *
+from zelda.data.controls import *
 
 
 class Upgrade:
@@ -11,7 +12,7 @@ class Upgrade:
         self.attribute_number = len(self.player.stats)
         self.attribute_names = list(player.stats.keys())
         self.max_values = list(self.player.max_stats.values())
-        self.font = pygame.font.Font(UI_FONT, UI_FONT_SIZE)
+        self.font = get_font('joystix', 'medium')
 
         # item dimensions
         self.height = self.display_surf.get_height() * 0.8
@@ -27,16 +28,16 @@ class Upgrade:
         keys = pygame.key.get_pressed()
 
         if self.can_move:
-            if keys[pygame.K_RIGHT] and self.selection_index < self.attribute_number - 1:
+            if keys[CONTROLS[Controls.RIGHT]] and self.selection_index < self.attribute_number - 1:
                 self.selection_index += 1
                 self.can_move = False
                 self.selection_time = pygame.time.get_ticks()
-            elif keys[pygame.K_LEFT] and self.selection_index >= 1:
+            elif keys[CONTROLS[Controls.LEFT]] and self.selection_index >= 1:
                 self.selection_index -= 1
                 self.can_move = False
                 self.selection_time = pygame.time.get_ticks()
 
-            if keys[pygame.K_SPACE]:
+            if keys[CONTROLS[Controls.SELECT]]:
                 self.can_move = False
                 self.selection_time = pygame.time.get_ticks()
                 self.item_list[self.selection_index].trigger(self.player)

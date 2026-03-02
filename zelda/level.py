@@ -12,12 +12,15 @@ from zelda.map_loader import MapLoader
 from zelda.utils.utils import get_assets_dir
 from zelda.events import EventBus, Event
 from zelda.data.images import load_images
+from zelda.data.sounds import load_sounds, sounds
+
 
 # from debug import debug
 
 class Level:
     def __init__(self):
         images = load_images()
+        load_sounds()
 
         self.display_surf = pygame.display.get_surface()
         self.event_bus = EventBus()
@@ -47,7 +50,7 @@ class Level:
         self.subscribe_events()
 
         # sound
-        self.background_sound = pygame.mixer.Sound(get_assets_dir() + 'audio/main.ogg')
+        self.background_sound = sounds['background']
         self.background_sound.set_volume(0.5)
         self.background_sound.play(-1)
 
@@ -68,6 +71,7 @@ class Level:
         self.event_bus.subscribe(Event.GET_PLAYER_HEALTH, self.player.get_health)
         self.event_bus.subscribe(Event.GET_PLAYER_ENERGY, self.player.get_energy)
         self.event_bus.subscribe(Event.GET_PLAYER_STATS, self.player.get_stats)
+        self.event_bus.subscribe(Event.ADD_EXP, self.player.add_exp)
 
     def create_attack(self):
         self.current_attack = Weapon([self.visible_sprites, self.attack_sprites], self.event_bus)
@@ -112,6 +116,7 @@ class Level:
         self.animation_player.create_particles(particle_type, pos, [self.visible_sprites])
 
     def add_exp(self, amount):
+        self.event_bus.publish(Event.ADD_EXP, amount=amount)
         self.player.exp += amount
 
     def toggle_menu(self):

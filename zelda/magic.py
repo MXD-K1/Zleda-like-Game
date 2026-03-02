@@ -3,14 +3,14 @@ from random import randint
 import pygame
 
 from zelda.settings import *
-from zelda.utils.utils import get_assets_dir
+from zelda.data.sounds import sounds
 
 class MagicPlayer:
     def __init__(self, animation_player):
         self.animation_player = animation_player
         self.sounds = {
-            'heal': pygame.mixer.Sound(get_assets_dir() + 'audio/heal.wav'),
-            'flame': pygame.mixer.Sound(get_assets_dir() + 'audio/flame.wav')
+            'heal': sounds['heal'],
+            'flame': sounds['flame']
         }
 
     def heal(self, player, strength, cost, groups):

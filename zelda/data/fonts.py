@@ -8,10 +8,11 @@ fonts = {}
 
 def init_fonts():
     local_fonts = {
+        'debug': Font(None, 30),
         'joystix': {
-            'small': Font(get_assets_dir() + 'fonts/joystix.ttf'),
+            'small': Font(get_assets_dir() + 'fonts/joystix.ttf', 12),
             'medium': Font(get_assets_dir() + 'fonts/joystix.ttf', 18),
-            'large': Font(get_assets_dir() + 'fonts/joystix.ttf')
+            'large': Font(get_assets_dir() + 'fonts/joystix.ttf', 32)
         },
     }
 

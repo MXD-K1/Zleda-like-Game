@@ -13,6 +13,7 @@ class Event(Enum):
     GET_PLAYER_HEALTH = auto()
     GET_PLAYER_ENERGY = auto()
     GET_PLAYER_STATS = auto()
+    ADD_EXP = auto()
 
 class EventBus:
     def __init__(self):
@@ -32,7 +33,7 @@ class EventBus:
         else:
             raise ValueError("Event not subscribed.")
 
-    def emit(self, event: Enum, **kwargs):
+    def publish(self, event: Enum, **kwargs):
         """Call an event and pass keyword arguments to it"""
         if event not in self.events:
             raise ValueError("Event not subscribed.")

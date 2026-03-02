@@ -4,8 +4,9 @@ import pygame
 
 from zelda.settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
 from zelda.data.color import WATER_COLOR
+from zelda.data.controls import *
 from zelda.level import Level
-from zelda.data.font import init_fonts
+from zelda.data.fonts import init_fonts
 
 # from debug import debug
 
@@ -27,7 +28,7 @@ class Game:
                     sys.exit()
 
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_m:
+                    if event.key == CONTROLS[Controls.TOGGLE_MENU]:
                         self.level.toggle_menu()
 
             self.screen.fill(WATER_COLOR)

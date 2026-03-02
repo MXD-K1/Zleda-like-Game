@@ -2,6 +2,7 @@ import pygame
 
 from zelda.events import Event, EventBus
 from zelda.settings import *
+from zelda.data.fonts import get_font
 from zelda.data.data import weapon_data, magic_data
 from zelda.data.color import *
 
@@ -9,7 +10,7 @@ from zelda.data.color import *
 class UI:
     def __init__(self, event_bus: EventBus):
         self.display_surf = pygame.display.get_surface()
-        self.font = pygame.font.Font(UI_FONT, UI_FONT_SIZE)
+        self.font = get_font('joystix', 'medium')
         self.event_bus = event_bus
 
         # bar setup
@@ -69,9 +70,9 @@ class UI:
 
     def display(self, player):
         # TODO: get rid of the player arg
-        player_stats = self.event_bus.emit(Event.GET_PLAYER_STATS)
-        self.show_bar(self.event_bus.emit(Event.GET_PLAYER_HEALTH), player_stats['health'], self.health_bar_rect, HEALTH_COLOR)
-        self.show_bar(self.event_bus.emit(Event.GET_PLAYER_ENERGY), player_stats['energy'], self.energy_bar_rect, ENERGY_COLOR)
-        self.show_exp(self.event_bus.emit(Event.GET_PLAYER_EXP))
+        player_stats = self.event_bus.publish(Event.GET_PLAYER_STATS)
+        self.show_bar(self.event_bus.publish(Event.GET_PLAYER_HEALTH), player_stats['health'], self.health_bar_rect, HEALTH_COLOR)
+        self.show_bar(self.event_bus.publish(Event.GET_PLAYER_ENERGY), player_stats['energy'], self.energy_bar_rect, ENERGY_COLOR)
+        self.show_exp(self.event_bus.publish(Event.GET_PLAYER_EXP))
         self.weapon_overlay(player.weapon_index, player.can_switch_weapon)
         self.magic_overlay(player.magic_index, player.can_switch_magic)
