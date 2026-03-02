@@ -25,6 +25,8 @@ class MagicPlayer:
             self.animation_player.create_particles('heal', player.rect.center + pygame.math.Vector2(0, -60), groups)
 
     def flame(self, player, cost, groups):
+        flame_number = 6
+
         if player.energy >= cost:
             self.sounds['flame'].play()
             player.energy -= cost
@@ -38,7 +40,7 @@ class MagicPlayer:
             else:
                 direction = pygame.math.Vector2(0, 1)
 
-            for i in range(1, 6):
+            for i in range(1, flame_number):
                 if direction.x:  # horizontal
                     offset_x = (direction.x * i) * TILE_SIZE
                     x = player.rect.centerx + offset_x + randint(-TILE_SIZE // 3, TILE_SIZE // 3)
@@ -49,5 +51,3 @@ class MagicPlayer:
                     x = player.rect.centerx + randint(-TILE_SIZE // 3, TILE_SIZE // 3)
                     y = player.rect.centery + offset_y + randint(-TILE_SIZE // 3, TILE_SIZE // 3)
                     self.animation_player.create_particles('flame', (x, y), groups)
-
-

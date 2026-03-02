@@ -17,7 +17,7 @@ from zelda.data.images import load_images
 from zelda.data.sounds import load_sounds, sounds
 from zelda.data.fonts import init_fonts
 
-# from debug import debug
+# from zelda.debug import debug
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ class Level:
         self.game_paused = False
 
         # sprite groups
-        self.visible_sprites = CameraGroup()
+        self.visible_sprites = CameraGroup(self.event_bus)
         self.obstacle_sprites = pygame.sprite.Group()
         self.attack_sprites = pygame.sprite.Group()
         self.attackable_sprites = pygame.sprite.Group()
@@ -38,61 +38,51 @@ class Level:
         # attack
         self.current_attack = None
         self.map_loader = MapLoader(self)
-        try:
-            self.map_loader.load_map(get_assets_dir() + 'map/map.tmx')
-        except pygame.error:
-            logger.error(f'Could not load map. Error: {pygame.error}')
-            pygame.quit()
-            sys.exit()
-
-        self.player = self.map_loader.player
-
-        self.ui = UI(self.event_bus)
-        self.upgrade = Upgrade(self.player)
-        self.should_display_start_screen = False
+        self.player = self._load_map('map.tmx')
 
         # particles
-        self.animation_player = AnimationPlayer(self.images)
+        self.animation_player = AnimationPlayer()
         self.magic_player = MagicPlayer(self.animation_player)
 
         # events
         self.subscribe_events()
+
+        self.ui = UI(self.event_bus)
+        self.upgrade = Upgrade(self.event_bus)
+        self.should_display_start_screen = False
 
         # sound
         self.background_sound = sounds['background']
         self.background_sound.set_volume(0.5)
         self.background_sound.play(-1)
 
-    def load_game(self):
-        try:
-            self.images = load_images()
-        except pygame.error as e:
-            logger.error(f'Could not load images. Error: {e}')
-            pygame.quit()
-            sys.exit()
-        else:
-            logger.info('Loaded images successfully')
+    @staticmethod
+    def load_game():
+        def _load_resource(action, label):
+            try:
+                action()
+            except pygame.error as e:
+                logger.error(f'Could not load {label}. Error: {e}')
+                pygame.quit()
+                sys.exit()
+            else:
+                logger.info(f'Loaded {label} successfully')
 
-        try:
-            load_sounds()
-        except pygame.error as e:
-            logger.error(f'Could not load sounds. Error: {e}')
-            pygame.quit()
-            sys.exit()
-        else:
-            logger.info('Loaded sounds successfully')
-
-        try:
-            init_fonts()
-        except pygame.error as e:
-            logger.error(f'Could not load fonts. Error: {e}')
-            pygame.quit()
-            sys.exit()
-        else:
-            logger.info('Loaded fonts successfully')
+        _load_resource(load_images, 'images')
+        _load_resource(load_sounds, 'sounds')
+        _load_resource(init_fonts, 'fonts')
 
     def display_start_screen(self):
         self.display_surf.fill((50, 50, 50))
+
+    def _load_map(self, map_name):
+        try:
+            player = self.map_loader.load_map(get_assets_dir() + f'map/{map_name}')
+            return player
+        except pygame.error:
+            logger.error(f'Could not load map. Error: {pygame.error}')
+            pygame.quit()
+            sys.exit()
 
     def subscribe_events(self):
         self.event_bus.subscribe(Event.CREATE_ATTACK, self.create_attack)
@@ -105,6 +95,7 @@ class Level:
         self.event_bus.subscribe(Event.GET_PLAYER_HEALTH, self.player.get_health)
         self.event_bus.subscribe(Event.GET_PLAYER_ENERGY, self.player.get_energy)
         self.event_bus.subscribe(Event.GET_PLAYER_STATS, self.player.get_stats)
+        self.event_bus.subscribe(Event.GET_PLAYER_ATTACK_INFO, self.player.get_attack_info)
         self.event_bus.subscribe(Event.ADD_EXP, self.player.add_exp)
 
     def create_attack(self):
@@ -113,8 +104,7 @@ class Level:
     def create_magic(self, style, strength, cost):
         if style == 'heal':
             self.magic_player.heal(self.player, strength, cost, [self.visible_sprites])
-
-        if style == 'flame':
+        elif style == 'flame':
             self.magic_player.flame(self.player, cost, [self.visible_sprites, self.attack_sprites])
 
     def destroy_attack(self):
@@ -131,7 +121,7 @@ class Level:
                         if target_sprite.sprite_type == 'grass':
                             pos = target_sprite.rect.center
                             offset = pygame.math.Vector2(0, 70)
-                            for leaf in range(randint(3, 6)):
+                            for _ in range(randint(3, 6)):
                                 self.animation_player.create_grass_particles(pos - offset, [self.visible_sprites])
                             target_sprite.kill()
                         else:  # enemy
@@ -156,34 +146,39 @@ class Level:
     def toggle_menu(self):
         self.game_paused = not self.game_paused
 
+    def _run_active(self):
+        self.visible_sprites.custom_draw()
+        self.ui.display()
+
+        if self.game_paused:
+            self.upgrade.display()
+        else:
+            self.visible_sprites.update()
+            self.visible_sprites.enemy_update(self.player)
+            self.player_attack_logic()
+
     def run(self):
         if not self.should_display_start_screen:
-            self.visible_sprites.custom_draw(self.player)
-            self.ui.display(self.player)
-
-            if self.game_paused:
-                self.upgrade.display()
-            else:
-                self.visible_sprites.update()
-                self.visible_sprites.enemy_update(self.player)
-                self.player_attack_logic()
+            self._run_active()
         else:
             self.background_sound.stop()  # make sure it plays again when the game loads
             self.display_start_screen()
 
 
 class CameraGroup(pygame.sprite.Group):
-    def __init__(self):
+    def __init__(self, event_bus: EventBus):
         super().__init__()
         self.display_surf = pygame.display.get_surface()
+        self.event_bus = event_bus
         self.half_width = self.display_surf.get_size()[0] // 2
         self.half_height = self.display_surf.get_size()[1] // 2
         self.offset = pygame.math.Vector2()
         # draw order
 
-    def custom_draw(self, player):
-        self.offset.x = -(player.rect.centerx - self.half_width)
-        self.offset.y = -(player.rect.centery - self.half_height)
+    def custom_draw(self):
+        player_rect = self.event_bus.publish(Event.GET_PLAYER_RECT)
+        self.offset.x = -(player_rect.centerx - self.half_width)
+        self.offset.y = -(player_rect.centery - self.half_height)
 
         for layer in LAYERS.values():
             for sprite in sorted(self.sprites(), key=lambda s: s.rect.centery):

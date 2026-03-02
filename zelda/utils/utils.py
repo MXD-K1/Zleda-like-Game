@@ -1,8 +1,10 @@
+from math import sin
 from os import walk
 from os.path import normpath
 
 from pygame.transform import flip
 from pygame.image import load
+from pygame.time import get_ticks
 
 def import_folder(path):
     surf_list = []
@@ -48,5 +50,9 @@ def get_assets_dir():
     """Not finished yet"""
     return 'assets/'
 
+def wave_value():  # used to get alpha
+    value = sin(get_ticks())
+    return 255 if value >= 0 else 0
+
 __all__ = ['import_folder', 'import_folder_dict', 'import_folders_of_folder_dict', 'norm_path', 'get_assets_dir',
-           'reflect_images']
+           'reflect_images', 'wave_value']

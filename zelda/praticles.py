@@ -3,9 +3,10 @@ from random import choice
 import pygame
 
 from zelda.settings import LAYERS
+from zelda.data.images import images
 
 class AnimationPlayer:
-    def __init__(self, images):
+    def __init__(self):
         self.frames = {
             'flame': images['flame'],
             'aura': images['aura'],

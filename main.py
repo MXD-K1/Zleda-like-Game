@@ -9,7 +9,7 @@ from zelda.data.color import WATER_COLOR
 from zelda.data.controls import *
 from zelda.level import Level
 
-# from debug import debug
+# from zelda.debug import debug
 
 logging.getLogger(__name__)
 
@@ -34,9 +34,9 @@ class Game:
                         self.level.toggle_menu()
 
             self.screen.fill(WATER_COLOR)
+            self.clock.tick(FPS)
             self.level.run()
             pygame.display.update()
-            self.clock.tick(FPS)
 
 def run_game():
     try:
@@ -47,8 +47,7 @@ def run_game():
         sys.exit()
     except Exception as e:
         logging.error(e)
-        pygame.quit()
-        sys.exit()
+        raise e
 
 
 if __name__ == '__main__':

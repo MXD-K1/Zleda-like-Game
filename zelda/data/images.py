@@ -1,7 +1,9 @@
 from zelda.utils.utils import *
 
+images = {}
+
 def load_images():
-    images = {
+    loaded_images = {
         'weapons' : import_folders_of_folder_dict(get_assets_dir() + 'graphics/weapons'),
 
         # magic
@@ -39,4 +41,4 @@ def load_images():
         )
     }
 
-    return images
+    images.update(loaded_images)

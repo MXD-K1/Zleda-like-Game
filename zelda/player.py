@@ -3,7 +3,7 @@ import pygame
 from zelda.data.sounds import sounds
 from zelda.settings import HITBOX_OFFSET
 from zelda.data.data import weapon_data, magic_data
-from zelda.utils.utils import import_folder, get_assets_dir
+from zelda.utils.utils import import_folder, get_assets_dir, wave_value
 from zelda.data.controls import *
 from zelda.entity import Entity
 from zelda.events import EventBus, Event
@@ -27,13 +27,15 @@ class Player(Entity):
         self.attack_time = 0  # or None
 
         self.weapon_index = 0
-        self.weapon = list(weapon_data.keys())[self.weapon_index]
+        self.weapon_names = list(weapon_data.keys())
+        self.weapon = self.weapon_names[self.weapon_index]
         self.can_switch_weapon = True
         self.weapon_switch_time = None
         self.switch_duration_cooldown = 200
 
         self.magic_index = 0
-        self.magic = list(magic_data.keys())[self.weapon_index]
+        self.magic_names = list(magic_data.keys())
+        self.magic = self.magic_names[self.magic_index]
         self.can_switch_magic = True
         self.magic_switch_time = None
 
@@ -66,64 +68,81 @@ class Player(Entity):
         for animation in self.animations.keys():
             self.animations[animation] = import_folder(path + animation)
 
+    def _set_vertical_direction(self, keys):
+        if keys[CONTROLS[Controls.UP]]:
+            self.direction.y = -1
+            self.status = 'up'
+        elif keys[CONTROLS[Controls.DOWN]]:
+            self.direction.y = 1
+            self.status = 'down'
+        else:
+            self.direction.y = 0
+
+    def _set_horizontal_direction(self, keys):
+        if keys[CONTROLS[Controls.RIGHT]]:
+            self.direction.x = 1
+            self.status = 'right'
+        elif keys[CONTROLS[Controls.LEFT]]:
+            self.direction.x = -1
+            self.status = 'left'
+        else:
+            self.direction.x = 0
+
+    def _start_attack(self):
+        self.attacking = True
+        self.attack_time = pygame.time.get_ticks()
+        self.event_bus.publish(Event.CREATE_ATTACK)
+        self.weapon_attack_sound.play()
+
+    def _cast_magic(self):
+        self.attacking = True
+        self.attack_time = pygame.time.get_ticks()
+
+        magic = magic_data[self.magic]
+        strength = magic['strength'] + self.stats['magic']
+        cost = magic['cost']
+
+        self.event_bus.publish(Event.CAST_MAGIC, style=self.magic, strength=strength, cost=cost)
+
+    def _select_next_weapon(self):
+        if self.weapon_index < len(self.weapon_names) - 1:
+            self.weapon_index += 1
+        else:
+            self.weapon_index = 0
+        self.weapon = self.weapon_names[self.weapon_index]
+
+    def _select_next_magic(self):
+        if self.magic_index < len(self.magic_names) - 1:
+            self.magic_index += 1
+        else:
+            self.magic_index = 0
+        self.magic = self.magic_names[self.magic_index]
+
     def input(self):
         keys = pygame.key.get_pressed()
 
         if not self.attacking:
             # movement
-            if keys[CONTROLS[Controls.UP]]:
-                self.direction.y = -1
-                self.status = 'up'
-            elif keys[CONTROLS[Controls.DOWN]]:
-                self.direction.y = 1
-                self.status = 'down'
-            else:
-                self.direction.y = 0
-
-            if keys[CONTROLS[Controls.RIGHT]]:
-                self.direction.x = 1
-                self.status = 'right'
-            elif keys[CONTROLS[Controls.LEFT]]:
-                self.direction.x = -1
-                self.status = 'left'
-            else:
-                self.direction.x = 0
+            self._set_vertical_direction(keys)
+            self._set_horizontal_direction(keys)
 
             # attack
             if keys[CONTROLS[Controls.ATTACK_ACTION]] and not self.attacking:
-                self.attacking = True
-                self.attack_time = pygame.time.get_ticks()
-                self.event_bus.publish(Event.CREATE_ATTACK)
-                self.weapon_attack_sound.play()
+                self._start_attack()
 
             # magic
             if keys[CONTROLS[Controls.CAST_ACTION]] and not self.attacking:
-                self.attacking = True
-                self.attack_time = pygame.time.get_ticks()
-
-                style = list(magic_data.keys())[self.magic_index]
-                strength = list(magic_data.values())[self.magic_index]['strength'] + self.stats['magic']
-                cost = list(magic_data.values())[self.magic_index]['cost']
-
-                self.event_bus.publish(Event.CAST_MAGIC, style=style, strength=strength, cost=cost)
+                self._cast_magic()
 
             if keys[CONTROLS[Controls.SWITCH_WEAPON_ACTION]] and self.can_switch_weapon:
                 self.can_switch_weapon = False
                 self.weapon_switch_time = pygame.time.get_ticks()
-                if self.weapon_index < len(list(weapon_data.keys())) - 1:
-                    self.weapon_index += 1
-                else:
-                    self.weapon_index = 0
-                self.weapon = list(weapon_data.keys())[self.weapon_index]
+                self._select_next_weapon()
 
             if keys[CONTROLS[Controls.SWITCH_SPELL_ACTION]] and self.can_switch_magic:
                 self.can_switch_magic = False
                 self.magic_switch_time = pygame.time.get_ticks()
-                if self.magic_index < len(list(magic_data.keys())) - 1:
-                    self.magic_index += 1
-                else:
-                    self.magic_index = 0
-                self.magic = list(magic_data.keys())[self.magic_index]
+                self._select_next_magic()
 
     def get_status(self):
         if self.direction.x == 0 and self.direction.y == 0:
@@ -172,7 +191,7 @@ class Player(Entity):
 
         # flicker
         if not self.vulnerable:
-            alpha = self.wave_value()
+            alpha = wave_value()
             self.image.set_alpha(alpha)
         else:
             self.image.set_alpha(255)
@@ -207,7 +226,19 @@ class Player(Entity):
         return self.energy
 
     def get_stats(self):
-        return self.stats
+        return {
+            'stats': self.stats,
+            'max_stats': self.max_stats,
+            'upgrade_cost': self.upgrade_cost
+        }
+
+    def get_attack_info(self):
+        return {
+            'weapon_index': self.weapon_index,
+            'magic_index': self.magic_index,
+            'can_switch_weapon': self.can_switch_weapon,
+            'can_switch_magic': self.can_switch_magic
+        }
 
     def get_full_weapon_damage(self):
         base_damage = self.stats['attack']

@@ -68,11 +68,12 @@ class UI:
             pygame.draw.rect(self.display_surf, UI_BORDER_COLOR, bg_rect, 3)
         return bg_rect
 
-    def display(self, player):
+    def display(self):
         # TODO: get rid of the player arg
         player_stats = self.event_bus.publish(Event.GET_PLAYER_STATS)
-        self.show_bar(self.event_bus.publish(Event.GET_PLAYER_HEALTH), player_stats['health'], self.health_bar_rect, HEALTH_COLOR)
-        self.show_bar(self.event_bus.publish(Event.GET_PLAYER_ENERGY), player_stats['energy'], self.energy_bar_rect, ENERGY_COLOR)
+        attack_info = self.event_bus.publish(Event.GET_PLAYER_ATTACK_INFO)
+        self.show_bar(self.event_bus.publish(Event.GET_PLAYER_HEALTH), player_stats['stats']['health'], self.health_bar_rect, HEALTH_COLOR)
+        self.show_bar(self.event_bus.publish(Event.GET_PLAYER_ENERGY), player_stats['stats']['energy'], self.energy_bar_rect, ENERGY_COLOR)
         self.show_exp(self.event_bus.publish(Event.GET_PLAYER_EXP))
-        self.weapon_overlay(player.weapon_index, player.can_switch_weapon)
-        self.magic_overlay(player.magic_index, player.can_switch_magic)
+        self.weapon_overlay(attack_info['weapon_index'], attack_info['can_switch_weapon'])
+        self.magic_overlay(attack_info['magic_index'], attack_info['can_switch_magic'])

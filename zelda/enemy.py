@@ -1,6 +1,7 @@
 import pygame
 
 from zelda.data.data import monster_data
+from zelda.data.sounds import sounds
 from zelda.entity import Entity
 from zelda.utils.utils import *
 
@@ -54,8 +55,8 @@ class Enemy(Entity):
         self.invincibility_duration = 300
 
     def _init_sounds(self, monster_info):
-        self.death_sound = pygame.mixer.Sound(get_assets_dir() + 'audio/death.wav')
-        self.hit_sound = pygame.mixer.Sound(get_assets_dir() + 'audio/hit.wav')
+        self.death_sound = sounds['death']
+        self.hit_sound = sounds['hit']
         self.attack_sound = pygame.mixer.Sound(monster_info['attack_sound'])
         self.death_sound.set_volume(0.6)
         self.hit_sound.set_volume(0.6)
@@ -116,7 +117,7 @@ class Enemy(Entity):
             # flicker
             self.image.set_alpha(255)
         else:
-            alpha = self.wave_value()
+            alpha = wave_value()
             self.image.set_alpha(alpha)
 
     def cooldown(self):

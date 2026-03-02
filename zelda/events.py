@@ -13,6 +13,7 @@ class Event(Enum):
     GET_PLAYER_HEALTH = auto()
     GET_PLAYER_ENERGY = auto()
     GET_PLAYER_STATS = auto()
+    GET_PLAYER_ATTACK_INFO = auto()
     ADD_EXP = auto()
 
 class EventBus:
@@ -39,3 +40,7 @@ class EventBus:
             raise ValueError("Event not subscribed.")
         else:
             return self.events[event](**kwargs)
+
+    def clear_all_events(self):
+        """Clear all events"""
+        self.events.clear()

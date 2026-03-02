@@ -3,15 +3,18 @@ import pygame
 from zelda.data.fonts import get_font
 from zelda.data.color import *
 from zelda.data.controls import *
+from zelda.events import Event, EventBus
 
 
 class Upgrade:
-    def __init__(self, player):
+    def __init__(self, event_bus: EventBus):
         self.display_surf = pygame.display.get_surface()
-        self.player = player
-        self.attribute_number = len(self.player.stats)
-        self.attribute_names = list(player.stats.keys())
-        self.max_values = list(self.player.max_stats.values())
+        self.event_bus = event_bus
+        player_stats = self.event_bus.publish(Event.GET_PLAYER_STATS)
+
+        self.attribute_names = list(player_stats['stats'].keys())
+        self.attribute_number = len(self.attribute_names)
+        self.max_values = list(player_stats['max_stats'].values())
         self.font = get_font('joystix', 'medium')
 
         # item dimensions
@@ -40,7 +43,7 @@ class Upgrade:
             if keys[CONTROLS[Controls.SELECT]]:
                 self.can_move = False
                 self.selection_time = pygame.time.get_ticks()
-                self.item_list[self.selection_index].trigger(self.player)
+                self._apply_upgrade(self.selection_index)
 
     def selection_cooldown(self):
         if not self.can_move:
@@ -65,12 +68,34 @@ class Upgrade:
     def display(self):
         self.input()
         self.selection_cooldown()
+        player_stats = self.event_bus.publish(Event.GET_PLAYER_STATS)
+        stats = player_stats['stats']
+        max_stats = player_stats['max_stats']
+        upgrade_cost = player_stats['upgrade_cost']
         for index, item in enumerate(self.item_list):
             name = self.attribute_names[index]
-            value = self.player.get_value_by_index(index)
-            max_value = self.max_values[index]
-            cost = self.player.get_cost_by_index(index)
+            value = stats[name]
+            max_value = max_stats[name]
+            cost = upgrade_cost[name]
             item.display(self.display_surf, self.selection_index, name, value, max_value, cost)
+
+    def _apply_upgrade(self, index):
+        player_stats = self.event_bus.publish(Event.GET_PLAYER_STATS)
+        stats = player_stats['stats']
+        max_stats = player_stats['max_stats']
+        upgrade_cost = player_stats['upgrade_cost']
+
+        upgrade_attribute = self.attribute_names[index]
+        cost = upgrade_cost[upgrade_attribute]
+        exp = self.event_bus.publish(Event.GET_PLAYER_EXP)
+
+        if exp >= int(cost) and stats[upgrade_attribute] < max_stats[upgrade_attribute]:
+            self.event_bus.publish(Event.ADD_EXP, amount=-cost)
+            stats[upgrade_attribute] *= 1.2
+            upgrade_cost[upgrade_attribute] *= 1.4
+
+        if stats[upgrade_attribute] > max_stats[upgrade_attribute]:
+            stats[upgrade_attribute] = max_stats[upgrade_attribute]
 
 class Item:
     def __init__(self, left, top, width, height, index, font):
@@ -105,18 +130,6 @@ class Item:
         # draw_elements
         pygame.draw.line(surface, color, top, bottom, 5)
         pygame.draw.rect(surface, color, value_rect)
-
-    def trigger(self, player):
-        upgrade_attribute = list(player.stats.keys())[self.index]
-
-        if (player.exp >= int(player.upgrade_cost[upgrade_attribute])
-                and player.stats[upgrade_attribute] < player.max_stats[upgrade_attribute]):
-            player.exp -= player.upgrade_cost[upgrade_attribute]
-            player.stats[upgrade_attribute] *= 1.2
-            player.upgrade_cost[upgrade_attribute] *= 1.4
-
-        if player.stats[upgrade_attribute] > player.max_stats[upgrade_attribute]:
-            player.stats[upgrade_attribute] = player.max_stats[upgrade_attribute]
 
     def display(self, surface, selection_num, name, value, max_value, cost):
         if self.index == selection_num:
