@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 - Write docs
 - Added GitHub templates for `bug_report` and `feature_request`
 - Implemented an event bus
-- Grouped images in a single file
+- Loading logic is being moved into separate files and grouped correctly
 
 ## [0.1.0] - 2025-12-2
 - Initial release
