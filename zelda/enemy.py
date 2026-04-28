@@ -62,9 +62,10 @@ class Enemy(Entity):
         self.hit_sound.set_volume(0.6)
         self.attack_sound.set_volume(0.3)
 
+    # noinspection PyAttributeOutsideInit
     def import_graphics(self, name):
         self.animations = {'idle': [], 'move': [], 'attack': []}
-        main_path = get_assets_dir() + f'graphics/monsters/{name}/'
+        main_path = get_assets_dir() + f'graphics/enemies/{name}/'
         for animation in self.animations.keys():
             self.animations[animation] = import_folder(main_path + animation)
 
