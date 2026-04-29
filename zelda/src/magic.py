@@ -1,3 +1,4 @@
+from enum import Enum
 from random import randint
 
 import pygame
@@ -5,30 +6,35 @@ import pygame
 from src.settings import *
 from src.data.sounds import sounds
 
+class MagicAttacks(Enum):
+    HEAL = 'heal'
+    FLAME = 'flame'
+
+
 class MagicPlayer:
     def __init__(self, animation_player):
         self.animation_player = animation_player
         self.sounds = {
-            'heal': sounds['heal'],
-            'flame': sounds['flame']
+            MagicAttacks.HEAL.value: sounds[MagicAttacks.HEAL.value],
+            MagicAttacks.FLAME.value: sounds[MagicAttacks.FLAME.value]
         }
 
     def heal(self, player, strength, cost, groups):
         if player.energy >= cost:
-            self.sounds['heal'].play()
+            self.sounds[MagicAttacks.HEAL.value].play()
             player.health += strength
             player.energy -= cost
             if player.health >= player.stats['health']:
                 player.health = player.stats['health']
                 # decision
             self.animation_player.create_particles('aura', player.rect.center, groups)
-            self.animation_player.create_particles('heal', player.rect.center + pygame.math.Vector2(0, -60), groups)
+            self.animation_player.create_particles(MagicAttacks.HEAL.value, player.rect.center + pygame.math.Vector2(0, -60), groups)
 
     def flame(self, player, cost, groups):
         flame_number = 6
 
         if player.energy >= cost:
-            self.sounds['flame'].play()
+            self.sounds[MagicAttacks.FLAME.value].play()
             player.energy -= cost
 
             if player.status.split('_')[0] == 'right':
@@ -45,9 +51,9 @@ class MagicPlayer:
                     offset_x = (direction.x * i) * TILE_SIZE
                     x = player.rect.centerx + offset_x + randint(-TILE_SIZE // 3, TILE_SIZE // 3)
                     y = player.rect.centery + randint(-TILE_SIZE // 3, TILE_SIZE // 3)
-                    self.animation_player.create_particles('flame', (x, y), groups)
+                    self.animation_player.create_particles(MagicAttacks.FLAME.value, (x, y), groups)
                 else:  # vertical
                     offset_y = (direction.y * i) * TILE_SIZE
                     x = player.rect.centerx + randint(-TILE_SIZE // 3, TILE_SIZE // 3)
                     y = player.rect.centery + offset_y + randint(-TILE_SIZE // 3, TILE_SIZE // 3)
-                    self.animation_player.create_particles('flame', (x, y), groups)
+                    self.animation_player.create_particles(MagicAttacks.FLAME.value, (x, y), groups)

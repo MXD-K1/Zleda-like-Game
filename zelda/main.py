@@ -46,7 +46,8 @@ def run_game():
     except KeyboardInterrupt:
         sys.exit()
     except Exception as e:
-        logging.error(e)
+        import traceback
+        logging.exception("Unexpected Exception")
         raise e
 
 

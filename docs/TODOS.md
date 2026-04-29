@@ -19,14 +19,14 @@ Scope: finish single-player core, add boss/content loop, ship release build, and
 ### Phase R1 (Week 1): Stabilize Foundation
 Goal: remove architectural friction that will block quests, bosses, and multiplayer.
 
-- [ ] Create `zelda/systems/` package.
+- [x] Create `zelda/systems/` package.
 - [ ] Move combat orchestration out of [`zelda/level.py`](/E:/MyProjects/Python/ZeldaGame/zelda/level.py) into `systems/combat_system.py`.
 - [ ] Move magic dispatch out of [`zelda/level.py`](/E:/MyProjects/Python/ZeldaGame/zelda/level.py) into `systems/magic_system.py`.
-- [ ] Move sound boot/loop logic out of [`zelda/level.py`](/E:/MyProjects/Python/ZeldaGame/zelda/level.py) into `systems/audio_system.py`.
+- [ ] Move sound boot/loop logic out of [`zelda/level.py`](zelda/src/level.py) into `systems/audio_system.py`.
 - [ ] Add `GameState` enum (`BOOT`, `PLAYING`, `PAUSED`, `DIALOG`, `DEAD`, `CUTSCENE`) and replace boolean flags.
 - [ ] Add `ResourceManager` to wrap `load_images/load_sounds/init_fonts` with validated startup report.
-- [ ] Standardize naming: rename `praticles.py` -> `particles.py` and update imports.
-- [ ] Replace stringly-typed magic (`'heal'`, `'flame'`) with constants/enums.
+- [x] Standardize naming: rename `praticles.py` -> `particles.py` and update imports.
+- [x] Replace stringly-typed magic (`'heal'`, `'flame'`) with constants/enums.
 
 ### Phase R2 (Week 2): Decouple Entities and Input
 Goal: make player/enemy logic extensible for combos, classes, and network sync.
@@ -60,50 +60,7 @@ Goal: make future feature growth safe.
 
 ---
 
-## 2) Files/Places That Need Refactoring (Blocking Long-Term Extension)
-
-### High Priority (Do first)
-- [`zelda/level.py`](/E:/MyProjects/Python/ZeldaGame/zelda/level.py)
-- Problem: god object (resource load, combat, ui, map control, pause, audio, particle orchestration).
-- Impact: every new feature creates merge conflicts and regression risk.
-
-- [`zelda/player.py`](/E:/MyProjects/Python/ZeldaGame/zelda/player.py)
-- Problem: mixed responsibilities (input, state, stats, combat, animation, progression).
-- Impact: hard to add combos, classes, net sync, AI possession tests.
-
-- [`zelda/events.py`](/E:/MyProjects/Python/ZeldaGame/zelda/events.py)
-- Problem: one callback per event; throws hard errors for missing subscriptions.
-- Impact: brittle as systems scale (quests/audio/UI observers cannot co-exist).
-
-- [`zelda/map_loader.py`](/E:/MyProjects/Python/ZeldaGame/zelda/map_loader.py)
-- Problem: map layers are hardcoded and spawn logic is monolithic.
-- Impact: adding new tile layers/biomes/interactions requires code edits every time.
-
-### Medium Priority
-- [`zelda/enemy.py`](/E:/MyProjects/Python/ZeldaGame/zelda/enemy.py)
-- Problem: AI state, damage model, sounds, animation tightly coupled.
-- Impact: boss mechanics and elite variants become duplicated spaghetti.
-
-- [`main.py`](/E:/MyProjects/Python/ZeldaGame/main.py)
-- Problem: no explicit scene/state orchestration abstraction.
-- Impact: cutscenes/title/gameover/options flow will stay ad-hoc.
-
-- [`zelda/data/data.py`](/E:/MyProjects/Python/ZeldaGame/zelda/data/data.py)
-- Problem: gameplay tuning likely static dict-heavy and hard to validate.
-- Impact: balancing work slows down and causes runtime errors.
-
-### Hygiene Priority
-- [`zelda/praticles.py`](/E:/MyProjects/Python/ZeldaGame/zelda/praticles.py)
-- Problem: typo in module name.
-- Impact: long-term maintainability + team confusion.
-
-- `assets/graphics/enemies/squid/attack` duplicate files (`0 - Copy*.png`)
-- Problem: unclean content pipeline.
-- Impact: accidental wrong animation import and inconsistent builds.
-
----
-
-## 3) Detailed 12-Week Execution TODO
+## 2) Detailed 12-Week Execution TODO
 
 ## Week 1 - Refactor Foundation + Performance Debug
 - [ ] Add profiler markers in game loop (`update`, `draw`, `collision`, `audio`).
@@ -112,7 +69,7 @@ Goal: make future feature growth safe.
 - [ ] Extract `AudioSystem`, route BGM/SFX through it.
 - [ ] Extract `CombatSystem` from `Level.player_attack_logic`.
 - [ ] Add startup resource validation report (missing files, bad decode).
-- [ ] Rename `praticles.py` and update imports.
+- [x] Rename `praticles.py` and update imports.
 - [ ] Add smoke test: boot to gameplay loop for 5 minutes.
 - [ ] Acceptance gate: no hitch > 50ms in normal play.
 
@@ -214,7 +171,7 @@ Goal: make future feature growth safe.
 
 ---
 
-## 4) Code Quality and Tooling TODO
+## 3) Code Quality and Tooling TODO
 - [ ] Add `ruff` + `black` configs.
 - [ ] Add `mypy` (gradual typing, start with `events`, `data`, `systems`).
 - [ ] Add CI workflow: lint + tests + packaging smoke check.
@@ -227,7 +184,7 @@ Goal: make future feature growth safe.
 
 ---
 
-## 5) Asset/Sound Integration TODO
+## 4) Asset/Sound Integration TODO
 - [ ] Create `docs/ASSET_MANIFEST.csv`.
 - [ ] Record source URL, license, author, attribution text for each imported asset.
 - [ ] Normalize sprite dimensions and origin points by category.
@@ -238,7 +195,7 @@ Goal: make future feature growth safe.
 
 ---
 
-## 6) Definition of Done (Publish Ready)
+## 5) Definition of Done (Publish Ready)
 - [ ] Full playthrough possible without blockers.
 - [ ] Save/load stable and backward-safe.
 - [ ] At least 1 polished boss and meaningful progression.
