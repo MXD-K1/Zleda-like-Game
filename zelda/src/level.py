@@ -4,7 +4,6 @@ import logging
 import pygame
 
 from src.ui import UI
-from src.settings import LAYERS
 from src.particles import AnimationPlayer
 from src.magic import MagicPlayer
 from src.upgrade import Upgrade
@@ -14,7 +13,8 @@ from src.events import EventBus, Event
 from src.data.images import load_images
 from src.data.sounds import load_sounds, sounds
 from src.data.fonts import init_fonts
-from systems.combat_system import CombatSystem
+from src.systems.combat_system import Combat
+from src.systems.camera_system import Camera
 
 # from src.debug import debug
 
@@ -29,14 +29,15 @@ class Level:
         self.game_paused = False
 
         # sprite groups
-        self.visible_sprites = CameraGroup(self.event_bus)
+        self.visible_sprites = pygame.sprite.Group()
         self.obstacle_sprites = pygame.sprite.Group()
         self.attack_sprites = pygame.sprite.Group()
         self.attackable_sprites = pygame.sprite.Group()
 
+        self.cam = Camera(self.visible_sprites, self.event_bus)
+
         # attack
         self.current_attack = None
-
 
         # particles
         self.animation_player = AnimationPlayer()
@@ -47,7 +48,7 @@ class Level:
         self.background_sound.set_volume(0.5)
         self.background_sound.play(-1)
 
-        self.combat = CombatSystem(self.event_bus, self.animation_player, self.magic_player, self.attack_sprites, self.attackable_sprites, self.visible_sprites)
+        self.combat = Combat(self.event_bus, self.animation_player, self.magic_player, self.attack_sprites, self.attackable_sprites, self.visible_sprites)
         self.map_loader = MapLoader(self)
         self.player = self._load_map('map.tmx')
         self.combat.set_player(self.player)
@@ -104,14 +105,14 @@ class Level:
         self.game_paused = not self.game_paused
 
     def _run_active(self):
-        self.visible_sprites.custom_draw()
+        self.cam.custom_draw()
         self.ui.display()
 
         if self.game_paused:
             self.upgrade.display()
         else:
-            self.visible_sprites.update()
-            self.visible_sprites.enemy_update(self.player)
+            self.cam.update()
+            self.cam.enemy_update(self.player)
             self.combat.player_attack_logic()
 
     def run(self):
@@ -120,32 +121,3 @@ class Level:
         else:
             self.background_sound.stop()  # make sure it plays again when the game loads
             self.display_start_screen()
-
-
-class CameraGroup(pygame.sprite.Group):
-    def __init__(self, event_bus: EventBus):
-        super().__init__()
-        self.display_surf = pygame.display.get_surface()
-        # self.drawable_sprites = drawable_sprites
-        self.event_bus = event_bus
-        self.half_width = self.display_surf.get_size()[0] // 2
-        self.half_height = self.display_surf.get_size()[1] // 2
-        self.offset = pygame.math.Vector2()
-        # draw order
-
-    def custom_draw(self):
-        player_rect = self.event_bus.publish(Event.GET_PLAYER_RECT)
-        self.offset.x = -(player_rect.centerx - self.half_width)
-        self.offset.y = -(player_rect.centery - self.half_height)
-
-        for layer in LAYERS.values():
-            for sprite in sorted(self.sprites(), key=lambda s: s.rect.centery):
-                if sprite.z == layer:
-                    offset_pos = sprite.rect.topleft + self.offset
-                    self.display_surf.blit(sprite.image, offset_pos)
-
-    def enemy_update(self, player):
-        enemy_sprites = [sprite for sprite in self.sprites() if hasattr(sprite, 'sprite_type')
-                         and sprite.sprite_type == 'enemy']
-        for enemy in enemy_sprites:
-            enemy.enemy_update(player)

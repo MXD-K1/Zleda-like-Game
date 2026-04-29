@@ -63,8 +63,5 @@ please follow the guidelines.
 
 👉 **See [`CONTRIBUTING.md`](docs/CONTRIBUTING.md)**
 
-## Roadmap
-> Note: A roadmap may be documented here later.
-
 ## License
 This project is licensed under the **MIT License**. See [`LICENSE`](LICENSE) for full terms.

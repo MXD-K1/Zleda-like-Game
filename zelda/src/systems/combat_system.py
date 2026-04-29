@@ -8,7 +8,7 @@ from src.weapon import Weapon
 
 logger = logging.getLogger(__name__)
 
-class CombatSystem:
+class Combat:
     def __init__(self, event_bus, animation_player, magic_player, attack_sprites, attackable_sprites, visible_sprites):
         self.current_attack = None
 
