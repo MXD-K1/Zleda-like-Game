@@ -2,8 +2,8 @@ from random import randint
 
 import pygame
 
-from zelda.settings import *
-from zelda.data.sounds import sounds
+from src.settings import *
+from src.data.sounds import sounds
 
 class MagicPlayer:
     def __init__(self, animation_player):

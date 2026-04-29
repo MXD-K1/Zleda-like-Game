@@ -1,9 +1,9 @@
 import pygame
 
-from zelda.data.fonts import get_font
-from zelda.data.color import *
-from zelda.data.controls import *
-from zelda.events import Event, EventBus
+from src.data.fonts import get_font
+from src.data.color import *
+from src.data.controls import *
+from src.events import Event, EventBus
 
 
 class Upgrade:

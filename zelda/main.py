@@ -3,13 +3,13 @@ import sys
 
 import pygame
 
-from zelda.log import setup_logging
-from zelda.settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, GAME_TITLE
-from zelda.data.color import WATER_COLOR
-from zelda.data.controls import *
-from zelda.level import Level
+from src.log import setup_logging
+from src.settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, GAME_TITLE
+from src.data.color import WATER_COLOR
+from src.data.controls import *
+from src.level import Level
 
-# from zelda.debug import debug
+# from src.debug import debug
 
 logging.getLogger(__name__)
 

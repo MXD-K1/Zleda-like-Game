@@ -48,7 +48,7 @@ def norm_path(path):
 
 def get_assets_dir():
     """Not finished yet"""
-    return 'assets/'
+    return 'zelda/assets/'
 
 def wave_value():  # used to get alpha
     value = sin(get_ticks())

@@ -1,6 +1,6 @@
 from pygame import mixer
 
-from zelda.utils.utils import get_assets_dir
+from src.utils.utils import get_assets_dir
 
 sounds = {}
 

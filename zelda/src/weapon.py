@@ -1,8 +1,8 @@
 import pygame
 
-from zelda.events import EventBus, Event
-from zelda.utils.utils import get_assets_dir
-from zelda.settings import LAYERS
+from src.events import EventBus, Event
+from src.utils.utils import get_assets_dir
+from src.settings import LAYERS
 
 
 class Weapon(pygame.sprite.Sprite):

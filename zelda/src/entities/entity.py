@@ -1,6 +1,6 @@
 import pygame
 
-from zelda.settings import LAYERS
+from src.settings import LAYERS
 
 
 class Entity(pygame.sprite.Sprite):

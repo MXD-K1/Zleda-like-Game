@@ -1,7 +1,7 @@
 import logging
 
 import pygame
-from zelda.data.fonts import fonts
+from src.data.fonts import fonts
 
 logger = logging.getLogger(__name__)
 

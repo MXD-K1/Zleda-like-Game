@@ -1,9 +1,9 @@
 import pygame
 
-from zelda.data.data import monster_data
-from zelda.data.sounds import sounds
-from zelda.entities.entity import Entity
-from zelda.utils.utils import *
+from src.data.data import monster_data
+from src.data.sounds import sounds
+from src.entities.entity import Entity
+from src.utils.utils import *
 
 
 class Enemy(Entity):

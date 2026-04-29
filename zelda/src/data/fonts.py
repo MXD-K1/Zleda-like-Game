@@ -2,7 +2,7 @@ from typing import Literal
 
 from pygame.font import Font
 
-from zelda.utils.utils import get_assets_dir
+from src.utils.utils import get_assets_dir
 
 fonts = {}
 

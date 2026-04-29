@@ -2,8 +2,8 @@ from random import choice
 
 import pygame
 
-from zelda.settings import LAYERS
-from zelda.data.images import images
+from src.settings import LAYERS
+from src.data.images import images
 
 class AnimationPlayer:
     def __init__(self):

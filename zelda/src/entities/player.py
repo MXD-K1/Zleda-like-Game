@@ -1,12 +1,12 @@
 import pygame
 
-from zelda.data.sounds import sounds
-from zelda.settings import HITBOX_OFFSET
-from zelda.data.data import weapon_data, magic_data
-from zelda.utils.utils import import_folder, get_assets_dir, wave_value
-from zelda.data.controls import *
-from zelda.entities.entity import Entity
-from zelda.events import EventBus, Event
+from src.data.sounds import sounds
+from src.settings import HITBOX_OFFSET
+from src.data.data import weapon_data, magic_data
+from src.utils.utils import import_folder, get_assets_dir, wave_value
+from src.data.controls import *
+from src.entities.entity import Entity
+from src.events import EventBus, Event
 
 class Player(Entity):
     def __init__(self, pos, groups, obstacle_sprites, event_bus: EventBus):

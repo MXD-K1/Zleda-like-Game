@@ -1,10 +1,10 @@
 import pygame
 
-from zelda.events import Event, EventBus
-from zelda.settings import *
-from zelda.data.fonts import get_font
-from zelda.data.data import weapon_data, magic_data
-from zelda.data.color import *
+from src.events import Event, EventBus
+from src.settings import *
+from src.data.fonts import get_font
+from src.data.data import weapon_data, magic_data
+from src.data.color import *
 
 
 class UI:

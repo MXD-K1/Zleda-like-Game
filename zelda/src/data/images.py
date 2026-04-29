@@ -1,4 +1,4 @@
-from zelda.utils.utils import *
+from src.utils.utils import *
 
 images = {}
 

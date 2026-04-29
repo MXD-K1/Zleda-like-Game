@@ -1,10 +1,10 @@
 from pytmx import load_pygame
 
-from zelda.tile import Tile
-from zelda.settings import TILE_SIZE
-from zelda.object import Object
-from zelda.entities.player import Player
-from zelda.entities.enemy import Enemy
+from src.tile import Tile
+from src.settings import TILE_SIZE
+from src.object import Object
+from src.entities.player import Player
+from src.entities.enemy import Enemy
 
 
 class MapLoader:

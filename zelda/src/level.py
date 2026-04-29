@@ -4,20 +4,20 @@ from random import randint
 
 import pygame
 
-from zelda.ui import UI
-from zelda.settings import LAYERS
-from zelda.weapon import Weapon
-from zelda.praticles import AnimationPlayer
-from zelda.magic import MagicPlayer
-from zelda.upgrade import Upgrade
-from zelda.map_loader import MapLoader
-from zelda.utils.utils import get_assets_dir
-from zelda.events import EventBus, Event
-from zelda.data.images import load_images
-from zelda.data.sounds import load_sounds, sounds
-from zelda.data.fonts import init_fonts
+from src.ui import UI
+from src.settings import LAYERS
+from src.weapon import Weapon
+from src.particles import AnimationPlayer
+from src.magic import MagicPlayer
+from src.upgrade import Upgrade
+from src.map_loader import MapLoader
+from src.utils.utils import get_assets_dir
+from src.events import EventBus, Event
+from src.data.images import load_images
+from src.data.sounds import load_sounds, sounds
+from src.data.fonts import init_fonts
 
-# from zelda.debug import debug
+# from src.debug import debug
 
 logger = logging.getLogger(__name__)
 
