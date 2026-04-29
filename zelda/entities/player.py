@@ -5,7 +5,7 @@ from zelda.settings import HITBOX_OFFSET
 from zelda.data.data import weapon_data, magic_data
 from zelda.utils.utils import import_folder, get_assets_dir, wave_value
 from zelda.data.controls import *
-from zelda.entity import Entity
+from zelda.entities.entity import Entity
 from zelda.events import EventBus, Event
 
 class Player(Entity):

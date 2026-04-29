@@ -2,7 +2,7 @@ import pygame
 
 from zelda.data.data import monster_data
 from zelda.data.sounds import sounds
-from zelda.entity import Entity
+from zelda.entities.entity import Entity
 from zelda.utils.utils import *
 
 
