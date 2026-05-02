@@ -7,6 +7,8 @@ from src.utils.utils import import_folder, get_assets_dir, wave_value
 from src.data.controls import *
 from src.entities.entity import Entity
 from src.events import EventBus, Event
+from src.utils.images import cut_spritesheet
+
 
 class Player(Entity):
     def __init__(self, pos, groups, obstacle_sprites, event_bus: EventBus):
@@ -58,15 +60,28 @@ class Player(Entity):
 
     # noinspection PyAttributeOutsideInit
     def import_assets(self):
-        path = get_assets_dir() + 'graphics/player/'
-        self.animations = {
-            'up': [], 'down': [], 'left': [], 'right': [],
-            'right_idle': [], 'left_idle': [], 'up_idle': [], 'down_idle': [],
-            'right_attack': [], 'left_attack': [], 'up_attack': [], 'down_attack': []
+        sheet = cut_spritesheet(get_assets_dir() + 'graphics/player/spritesheet.png', 4, 7)
+
+        animation_config = {
+            'up': [(0, 1), (1, 1), (2, 1), (3, 1)],
+            'down': [(0, 0), (1, 0), (2, 0), (3, 0)],
+            'left': [(0, 2), (1, 2), (2, 2), (3, 2)],
+            'right': [(0, 3), (1, 3), (2, 3), (3, 3)],
+            'right_idle': [(0, 3)],
+            'left_idle': [(0, 2)],
+            'up_idle': [(0, 1)],
+            'down_idle': [(0, 0)],
+            'right_attack': [(4, 3)],
+            'left_attack': [(4, 2)],
+            'up_attack': [(4, 1)],
+            'down_attack': [(4, 0)]
         }
 
-        for animation in self.animations.keys():
-            self.animations[animation] = import_folder(path + animation)
+        self.animations = {}
+        for anim, anim_list in animation_config.items():
+            self.animations[anim] = []
+            for anim_coord in anim_list:
+                self.animations[anim].append(sheet[anim_coord])
 
     def _set_vertical_direction(self, keys):
         if keys[CONTROLS[Controls.UP]]:
