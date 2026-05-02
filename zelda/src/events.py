@@ -1,6 +1,7 @@
 from enum import Enum, auto
 from typing import Callable
 
+
 class Event(Enum):
     CAST_MAGIC = auto()
     CREATE_ATTACK = auto()
@@ -15,6 +16,7 @@ class Event(Enum):
     GET_PLAYER_STATS = auto()
     GET_PLAYER_ATTACK_INFO = auto()
     ADD_EXP = auto()
+
 
 class EventBus:
     def __init__(self):

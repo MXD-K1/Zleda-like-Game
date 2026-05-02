@@ -6,10 +6,10 @@ from src.settings import LAYERS
 class Entity(pygame.sprite.Sprite):
     def __init__(self, groups: list[pygame.sprite.Group], image):
         super().__init__(*groups)
-        self.image = image
+        self.image: pygame.Surface = image
         self.rect = self.image.get_rect()  # Have to be replaced
         self.hitbox = self.rect.copy()
-        self.z = LAYERS['main']
+        self.z = LAYERS["main"]
 
         # graphics
         self.frame_index = 0
@@ -17,7 +17,7 @@ class Entity(pygame.sprite.Sprite):
 
         # movement
         self.direction = pygame.math.Vector2()
-        self.obstacle_sprites = pygame.sprite.Group()  # Have to be replaced
+        self.obstacle_sprites: pygame.sprite.Group = pygame.sprite.Group()  # Have to be replaced
 
     def move(self, speed):
         if self.direction.magnitude() != 0:

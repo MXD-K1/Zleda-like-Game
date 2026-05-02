@@ -20,6 +20,7 @@ from src.systems.camera_system import Camera
 
 logger = logging.getLogger(__name__)
 
+
 class Level:
     def __init__(self):
         self.load_game()
@@ -44,13 +45,20 @@ class Level:
         self.magic_player = MagicPlayer(self.animation_player)
 
         # sound
-        self.background_sound = sounds['background']
+        self.background_sound = sounds["background"]
         self.background_sound.set_volume(0.5)
         self.background_sound.play(-1)
 
-        self.combat = Combat(self.event_bus, self.animation_player, self.magic_player, self.attack_sprites, self.attackable_sprites, self.visible_sprites)
+        self.combat = Combat(
+            self.event_bus,
+            self.animation_player,
+            self.magic_player,
+            self.attack_sprites,
+            self.attackable_sprites,
+            self.visible_sprites,
+        )
         self.map_loader = MapLoader(self)
-        self.player = self._load_map('map.tmx')
+        self.player = self._load_map("map.tmx")
         self.combat.set_player(self.player)
 
         # events
@@ -66,25 +74,25 @@ class Level:
             try:
                 action()
             except pygame.error as e:
-                logger.error(f'Could not load {label}. Error: {e}')
+                logger.error(f"Could not load {label}. Error: {e}")
                 pygame.quit()
                 sys.exit()
             else:
-                logger.info(f'Loaded {label} successfully')
+                logger.info(f"Loaded {label} successfully")
 
-        _load_resource(load_images, 'images')
-        _load_resource(load_sounds, 'sounds')
-        _load_resource(init_fonts, 'fonts')
+        _load_resource(load_images, "images")
+        _load_resource(load_sounds, "sounds")
+        _load_resource(init_fonts, "fonts")
 
     def display_start_screen(self):
         self.display_surf.fill((50, 50, 50))
 
     def _load_map(self, map_name):
         try:
-            player = self.map_loader.load_map(get_assets_dir() + f'maps/{map_name}')
+            player = self.map_loader.load_map(get_assets_dir() + f"maps/{map_name}")
             return player
         except pygame.error as e:
-            logger.error(f'Could not load map. Error: {e}')
+            logger.error(f"Could not load map. Error: {e}")
             pygame.quit()
             sys.exit()
 
@@ -96,10 +104,14 @@ class Level:
         self.event_bus.subscribe(Event.GET_PLAYER_HEALTH, self.player.get_health)
         self.event_bus.subscribe(Event.GET_PLAYER_ENERGY, self.player.get_energy)
         self.event_bus.subscribe(Event.GET_PLAYER_STATS, self.player.get_stats)
-        self.event_bus.subscribe(Event.GET_PLAYER_ATTACK_INFO, self.player.get_attack_info)
+        self.event_bus.subscribe(
+            Event.GET_PLAYER_ATTACK_INFO, self.player.get_attack_info
+        )
 
     def trigger_death_particles(self, pos, particle_type):
-        self.animation_player.create_particles(particle_type, pos, [self.visible_sprites])
+        self.animation_player.create_particles(
+            particle_type, pos, [self.visible_sprites]
+        )
 
     def toggle_menu(self):
         self.game_paused = not self.game_paused

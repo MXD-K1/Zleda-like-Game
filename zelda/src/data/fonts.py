@@ -6,17 +6,19 @@ from src.utils.utils import get_assets_dir
 
 fonts = {}
 
+
 def init_fonts():
     local_fonts = {
-        'debug': Font(None, 30),
-        'joystix': {
-            'small': Font(get_assets_dir() + 'fonts/joystix.ttf', 12),
-            'medium': Font(get_assets_dir() + 'fonts/joystix.ttf', 18),
-            'large': Font(get_assets_dir() + 'fonts/joystix.ttf', 32)
+        "debug": Font(None, 30),
+        "joystix": {
+            "small": Font(get_assets_dir() + "fonts/joystix.ttf", 12),
+            "medium": Font(get_assets_dir() + "fonts/joystix.ttf", 18),
+            "large": Font(get_assets_dir() + "fonts/joystix.ttf", 32),
         },
     }
 
     fonts.update(local_fonts)
 
-def get_font(name: str, size:  Literal['small', 'medium', 'large']):
+
+def get_font(name: str, size: Literal["small", "medium", "large"]):
     return fonts[name][size]

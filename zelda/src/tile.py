@@ -2,16 +2,22 @@ import pygame
 
 from src.settings import TILE_SIZE, HITBOX_OFFSET, LAYERS
 
+
 class Tile(pygame.sprite.Sprite):
-    def __init__(self, pos, groups: list[pygame.sprite.Group], sprite_type,
-                 surface=pygame.Surface((TILE_SIZE, TILE_SIZE))):
+    def __init__(
+        self,
+        pos,
+        groups: list[pygame.sprite.Group],
+        sprite_type,
+        surface=pygame.Surface((TILE_SIZE, TILE_SIZE)),
+    ):
         super().__init__(*groups)
         self.image = surface
         self.sprite_type = sprite_type
         y_offset = HITBOX_OFFSET[sprite_type]
-        self.z = LAYERS['floor']
+        self.z = LAYERS["floor"]
 
-        if sprite_type == 'object':
+        if sprite_type == "object":
             self.rect = self.image.get_rect(topleft=(pos[0], pos[1] - TILE_SIZE))
         else:
             self.rect = self.image.get_rect(topleft=pos)

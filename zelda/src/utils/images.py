@@ -1,6 +1,6 @@
 import pygame
 
-from settings import SCALE_FACTOR
+from src.settings import SCALE_FACTOR
 
 
 def import_image(image_path):
@@ -16,7 +16,12 @@ def cut_spritesheet(spritesheet, cols, rows):
 
     for col in range(cols):
         for row in range(rows):
-            surf = spritesheet.subsurface((col * cell_width, row * cell_height, cell_width, cell_height)).copy()
-            surf = pygame.transform.scale(surf, (surf.get_width() * SCALE_FACTOR, surf.get_height() * SCALE_FACTOR)).copy()
+            surf = spritesheet.subsurface(
+                (col * cell_width, row * cell_height, cell_width, cell_height)
+            ).copy()
+            surf = pygame.transform.scale(
+                surf,
+                (surf.get_width() * SCALE_FACTOR, surf.get_height() * SCALE_FACTOR),
+            ).copy()
             frames[(row, col)] = surf
     return frames

@@ -8,8 +8,17 @@ from src.weapon import Weapon
 
 logger = logging.getLogger(__name__)
 
+
 class Combat:
-    def __init__(self, event_bus, animation_player, magic_player, attack_sprites, attackable_sprites, visible_sprites):
+    def __init__(
+        self,
+        event_bus,
+        animation_player,
+        magic_player,
+        attack_sprites,
+        attackable_sprites,
+        visible_sprites,
+    ):
         self.current_attack = None
 
         self.player = None
@@ -31,13 +40,17 @@ class Combat:
         self.event_bus.subscribe(Event.ADD_EXP, self.player.add_exp)
 
     def create_attack(self):
-        self.current_attack = Weapon([self.visible_sprites, self.attack_sprites], self.event_bus)
+        self.current_attack = Weapon(
+            [self.visible_sprites, self.attack_sprites], self.event_bus
+        )
 
     def create_magic(self, style, strength, cost):
-        if style == 'heal':
+        if style == "heal":
             self.magic_player.heal(self.player, strength, cost, [self.visible_sprites])
-        elif style == 'flame':
-            self.magic_player.flame(self.player, cost, [self.visible_sprites, self.attack_sprites])
+        elif style == "flame":
+            self.magic_player.flame(
+                self.player, cost, [self.visible_sprites, self.attack_sprites]
+            )
 
     def destroy_attack(self):
         if self.current_attack:
@@ -55,19 +68,27 @@ class Combat:
             self.player.hurt_time = pygame.time.get_ticks()
 
             # particles
-            self.animation_player.create_particles(attack_type, self.player.rect.center, [self.visible_sprites])
+            self.animation_player.create_particles(
+                attack_type, self.player.rect.center, [self.visible_sprites]
+            )
 
     def player_attack_logic(self):
         if self.attack_sprites:
             for attack_sprite in self.attack_sprites:
-                collision_sprites = pygame.sprite.spritecollide(attack_sprite, self.attackable_sprites, False)
+                collision_sprites = pygame.sprite.spritecollide(
+                    attack_sprite, self.attackable_sprites, False
+                )
                 if collision_sprites:
                     for target_sprite in collision_sprites:
-                        if target_sprite.sprite_type == 'grass':
+                        if target_sprite.sprite_type == "grass":
                             pos = target_sprite.rect.center
                             offset = pygame.math.Vector2(0, 70)
                             for _ in range(randint(3, 6)):
-                                self.animation_player.create_grass_particles(pos - offset, [self.visible_sprites])
+                                self.animation_player.create_grass_particles(
+                                    pos - offset, [self.visible_sprites]
+                                )
                             target_sprite.kill()
                         else:  # enemy
-                            target_sprite.get_damage(self.player, attack_sprite.sprite_type)
+                            target_sprite.get_damage(
+                                self.player, attack_sprite.sprite_type
+                            )

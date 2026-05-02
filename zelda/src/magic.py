@@ -3,12 +3,13 @@ from random import randint
 
 import pygame
 
-from src.settings import *
+from src.settings import TILE_SIZE
 from src.data.sounds import sounds
 
+
 class MagicAttacks(Enum):
-    HEAL = 'heal'
-    FLAME = 'flame'
+    HEAL = "heal"
+    FLAME = "flame"
 
 
 class MagicPlayer:
@@ -16,7 +17,7 @@ class MagicPlayer:
         self.animation_player = animation_player
         self.sounds = {
             MagicAttacks.HEAL.value: sounds[MagicAttacks.HEAL.value],
-            MagicAttacks.FLAME.value: sounds[MagicAttacks.FLAME.value]
+            MagicAttacks.FLAME.value: sounds[MagicAttacks.FLAME.value],
         }
 
     def heal(self, player, strength, cost, groups):
@@ -24,11 +25,15 @@ class MagicPlayer:
             self.sounds[MagicAttacks.HEAL.value].play()
             player.health += strength
             player.energy -= cost
-            if player.health >= player.stats['health']:
-                player.health = player.stats['health']
+            if player.health >= player.stats["health"]:
+                player.health = player.stats["health"]
                 # decision
-            self.animation_player.create_particles('aura', player.rect.center, groups)
-            self.animation_player.create_particles(MagicAttacks.HEAL.value, player.rect.center + pygame.math.Vector2(0, -60), groups)
+            self.animation_player.create_particles("aura", player.rect.center, groups)
+            self.animation_player.create_particles(
+                MagicAttacks.HEAL.value,
+                player.rect.center + pygame.math.Vector2(0, -60),
+                groups,
+            )
 
     def flame(self, player, cost, groups):
         flame_number = 6
@@ -37,11 +42,11 @@ class MagicPlayer:
             self.sounds[MagicAttacks.FLAME.value].play()
             player.energy -= cost
 
-            if player.status.split('_')[0] == 'right':
+            if player.status.split("_")[0] == "right":
                 direction = pygame.math.Vector2(1, 0)
-            elif player.status.split('_')[0] == 'left':
+            elif player.status.split("_")[0] == "left":
                 direction = pygame.math.Vector2(-1, 0)
-            elif player.status.split('_')[0] == 'up':
+            elif player.status.split("_")[0] == "up":
                 direction = pygame.math.Vector2(0, -1)
             else:
                 direction = pygame.math.Vector2(0, 1)
@@ -49,11 +54,23 @@ class MagicPlayer:
             for i in range(1, flame_number):
                 if direction.x:  # horizontal
                     offset_x = (direction.x * i) * TILE_SIZE
-                    x = player.rect.centerx + offset_x + randint(-TILE_SIZE // 3, TILE_SIZE // 3)
+                    x = (
+                        player.rect.centerx
+                        + offset_x
+                        + randint(-TILE_SIZE // 3, TILE_SIZE // 3)
+                    )
                     y = player.rect.centery + randint(-TILE_SIZE // 3, TILE_SIZE // 3)
-                    self.animation_player.create_particles(MagicAttacks.FLAME.value, (x, y), groups)
+                    self.animation_player.create_particles(
+                        MagicAttacks.FLAME.value, (x, y), groups
+                    )
                 else:  # vertical
                     offset_y = (direction.y * i) * TILE_SIZE
                     x = player.rect.centerx + randint(-TILE_SIZE // 3, TILE_SIZE // 3)
-                    y = player.rect.centery + offset_y + randint(-TILE_SIZE // 3, TILE_SIZE // 3)
-                    self.animation_player.create_particles(MagicAttacks.FLAME.value, (x, y), groups)
+                    y = (
+                        player.rect.centery
+                        + offset_y
+                        + randint(-TILE_SIZE // 3, TILE_SIZE // 3)
+                    )
+                    self.animation_player.create_particles(
+                        MagicAttacks.FLAME.value, (x, y), groups
+                    )

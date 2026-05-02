@@ -1,10 +1,11 @@
 import pygame
 
+from src.settings import TILE_SIZE
 from src.data.sounds import sounds
 from src.settings import HITBOX_OFFSET
 from src.data.data import weapon_data, magic_data
-from src.utils.utils import import_folder, get_assets_dir, wave_value
-from src.data.controls import *
+from src.utils.utils import get_assets_dir, wave_value
+from src.data.controls import Controls, CONTROLS
 from src.entities.entity import Entity
 from src.events import EventBus, Event
 from src.utils.images import cut_spritesheet
@@ -12,16 +13,16 @@ from src.utils.images import cut_spritesheet
 
 class Player(Entity):
     def __init__(self, pos, groups, obstacle_sprites, event_bus: EventBus):
-        image = pygame.image.load(get_assets_dir() + 'graphics/player/down_idle/idle_down.png').convert_alpha()
+        image = pygame.Surface((TILE_SIZE, TILE_SIZE))
         super().__init__(groups, image)
         self.rect = self.image.get_rect(topleft=pos)
-        self.hitbox = self.rect.inflate(-6, HITBOX_OFFSET['player'])
+        self.hitbox = self.rect.inflate(-6, HITBOX_OFFSET["player"])
         self.obstacle_sprites = obstacle_sprites
         self.event_bus = event_bus
 
         # graphics
         self.import_assets()
-        self.status = 'down'
+        self.status = "down"
 
         # attack
         self.attacking = False
@@ -42,39 +43,53 @@ class Player(Entity):
         self.magic_switch_time = None
 
         # stats
-        self.stats = {'health': 100, 'energy': 60, 'attack': 10, 'magic': 4, 'speed': 5}
-        self.max_stats = {'health': 300, 'energy': 140, 'attack': 20, 'magic': 10, 'speed': 10}
-        self.upgrade_cost = {'health': 100, 'energy': 100, 'attack': 100, 'magic': 100, 'speed': 100}
-        self.health = self.stats['health']
-        self.energy = self.stats['energy']
+        self.stats = {"health": 100, "energy": 60, "attack": 10, "magic": 4, "speed": 5}
+        self.max_stats = {
+            "health": 300,
+            "energy": 140,
+            "attack": 20,
+            "magic": 10,
+            "speed": 10,
+        }
+        self.upgrade_cost = {
+            "health": 100,
+            "energy": 100,
+            "attack": 100,
+            "magic": 100,
+            "speed": 100,
+        }
+        self.health = self.stats["health"]
+        self.energy = self.stats["energy"]
         self.exp = 0
-        self.speed = self.stats['speed']
+        self.speed = self.stats["speed"]
 
         # damage timer
         self.vulnerable = True
         self.hurt_time = None
         self.invulnerability_duration = 500
 
-        self.weapon_attack_sound = sounds['attack']
+        self.weapon_attack_sound = sounds["attack"]
         self.weapon_attack_sound.set_volume(0.4)
 
     # noinspection PyAttributeOutsideInit
     def import_assets(self):
-        sheet = cut_spritesheet(get_assets_dir() + 'graphics/player/spritesheet.png', 4, 7)
+        sheet = cut_spritesheet(
+            get_assets_dir() + "graphics/player/spritesheet.png", 4, 7
+        )
 
         animation_config = {
-            'up': [(0, 1), (1, 1), (2, 1), (3, 1)],
-            'down': [(0, 0), (1, 0), (2, 0), (3, 0)],
-            'left': [(0, 2), (1, 2), (2, 2), (3, 2)],
-            'right': [(0, 3), (1, 3), (2, 3), (3, 3)],
-            'right_idle': [(0, 3)],
-            'left_idle': [(0, 2)],
-            'up_idle': [(0, 1)],
-            'down_idle': [(0, 0)],
-            'right_attack': [(4, 3)],
-            'left_attack': [(4, 2)],
-            'up_attack': [(4, 1)],
-            'down_attack': [(4, 0)]
+            "up": [(0, 1), (1, 1), (2, 1), (3, 1)],
+            "down": [(0, 0), (1, 0), (2, 0), (3, 0)],
+            "left": [(0, 2), (1, 2), (2, 2), (3, 2)],
+            "right": [(0, 3), (1, 3), (2, 3), (3, 3)],
+            "right_idle": [(0, 3)],
+            "left_idle": [(0, 2)],
+            "up_idle": [(0, 1)],
+            "down_idle": [(0, 0)],
+            "right_attack": [(4, 3)],
+            "left_attack": [(4, 2)],
+            "up_attack": [(4, 1)],
+            "down_attack": [(4, 0)],
         }
 
         self.animations = {}
@@ -86,20 +101,20 @@ class Player(Entity):
     def _set_vertical_direction(self, keys):
         if keys[CONTROLS[Controls.UP]]:
             self.direction.y = -1
-            self.status = 'up'
+            self.status = "up"
         elif keys[CONTROLS[Controls.DOWN]]:
             self.direction.y = 1
-            self.status = 'down'
+            self.status = "down"
         else:
             self.direction.y = 0
 
     def _set_horizontal_direction(self, keys):
         if keys[CONTROLS[Controls.RIGHT]]:
             self.direction.x = 1
-            self.status = 'right'
+            self.status = "right"
         elif keys[CONTROLS[Controls.LEFT]]:
             self.direction.x = -1
-            self.status = 'left'
+            self.status = "left"
         else:
             self.direction.x = 0
 
@@ -114,10 +129,12 @@ class Player(Entity):
         self.attack_time = pygame.time.get_ticks()
 
         magic = magic_data[self.magic]
-        strength = magic['strength'] + self.stats['magic']
-        cost = magic['cost']
+        strength = magic["strength"] + self.stats["magic"]
+        cost = magic["cost"]
 
-        self.event_bus.publish(Event.CAST_MAGIC, style=self.magic, strength=strength, cost=cost)
+        self.event_bus.publish(
+            Event.CAST_MAGIC, style=self.magic, strength=strength, cost=cost
+        )
 
     def _select_next_weapon(self):
         if self.weapon_index < len(self.weapon_names) - 1:
@@ -161,24 +178,27 @@ class Player(Entity):
 
     def get_status(self):
         if self.direction.x == 0 and self.direction.y == 0:
-            if 'idle' not in self.status and 'attack' not in self.status:
-                self.status = self.status + '_idle'
+            if "idle" not in self.status and "attack" not in self.status:
+                self.status = self.status + "_idle"
 
         if self.attacking:
             self.direction.x, self.direction.y = 0, 0
-            if 'attack' not in self.status:
-                if 'idle' in self.status:
-                    self.status = self.status.replace('_idle', '_attack')
+            if "attack" not in self.status:
+                if "idle" in self.status:
+                    self.status = self.status.replace("_idle", "_attack")
                 else:
-                    self.status = self.status + '_attack'
+                    self.status = self.status + "_attack"
         else:
-            if 'attack' in self.status:
-                self.status = self.status.replace('_attack', '')
+            if "attack" in self.status:
+                self.status = self.status.replace("_attack", "")
 
     def cooldown(self):
         current_time = pygame.time.get_ticks()
         if self.attacking:
-            if current_time - self.attack_time >= self.attack_cooldown + weapon_data[self.weapon]['cooldown']:
+            if (
+                current_time - self.attack_time
+                >= self.attack_cooldown + weapon_data[self.weapon]["cooldown"]
+            ):
                 self.attacking = False
                 self.event_bus.publish(Event.DESTROY_ATTACK)
 
@@ -212,10 +232,10 @@ class Player(Entity):
             self.image.set_alpha(255)
 
     def energy_recovery(self):
-        if self.energy < self.stats['energy']:
-            self.energy += 0.002 * self.stats['magic']
+        if self.energy < self.stats["energy"]:
+            self.energy += 0.002 * self.stats["magic"]
         else:
-            self.energy = self.stats['energy']
+            self.energy = self.stats["energy"]
 
     def add_exp(self, amount):
         self.exp += amount
@@ -223,7 +243,7 @@ class Player(Entity):
     # ---------- Getters -------------
 
     def get_direction(self):
-        return self.status.split('_')[0]
+        return self.status.split("_")[0]
 
     def get_rect(self):
         return self.rect
@@ -242,27 +262,27 @@ class Player(Entity):
 
     def get_stats(self):
         return {
-            'stats': self.stats,
-            'max_stats': self.max_stats,
-            'upgrade_cost': self.upgrade_cost
+            "stats": self.stats,
+            "max_stats": self.max_stats,
+            "upgrade_cost": self.upgrade_cost,
         }
 
     def get_attack_info(self):
         return {
-            'weapon_index': self.weapon_index,
-            'magic_index': self.magic_index,
-            'can_switch_weapon': self.can_switch_weapon,
-            'can_switch_magic': self.can_switch_magic
+            "weapon_index": self.weapon_index,
+            "magic_index": self.magic_index,
+            "can_switch_weapon": self.can_switch_weapon,
+            "can_switch_magic": self.can_switch_magic,
         }
 
     def get_full_weapon_damage(self):
-        base_damage = self.stats['attack']
-        weapon_damage = weapon_data[self.weapon]['damage']
+        base_damage = self.stats["attack"]
+        weapon_damage = weapon_data[self.weapon]["damage"]
         return base_damage + weapon_damage
 
     def get_full_magic_damage(self):
-        base_damage = self.stats['magic']
-        spell_damage = magic_data[self.magic]['strength']
+        base_damage = self.stats["magic"]
+        spell_damage = magic_data[self.magic]["strength"]
         return base_damage + spell_damage
 
     def get_value_by_index(self, index):
@@ -278,5 +298,5 @@ class Player(Entity):
         self.cooldown()
         self.get_status()
         self.animate()
-        self.move(self.stats['speed'])
+        self.move(self.stats["speed"])
         self.energy_recovery()

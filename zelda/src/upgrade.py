@@ -1,21 +1,36 @@
+import logging
+
 import pygame
 
 from src.data.fonts import get_font
-from src.data.color import *
-from src.data.controls import *
+from src.data.color import (
+    TEXT_COLOR,
+    TEXT_COLOR_SELECTED,
+    BAR_COLOR,
+    BAR_COLOR_SELECTED,
+    UI_BG_COLOR,
+    UPGRADE_BG_COLOR_SELECTED,
+    UI_BORDER_COLOR,
+)
+from src.data.controls import Controls, CONTROLS
 from src.events import Event, EventBus
 
+logger = logging.getLogger(__name__)
 
 class Upgrade:
     def __init__(self, event_bus: EventBus):
         self.display_surf = pygame.display.get_surface()
+        if self.display_surf is None:
+            logger.error("Display surface is not initialized.")
+            raise Exception("Display surface is not initialized.")
+
         self.event_bus = event_bus
         player_stats = self.event_bus.publish(Event.GET_PLAYER_STATS)
 
-        self.attribute_names = list(player_stats['stats'].keys())
+        self.attribute_names = list(player_stats["stats"].keys())
         self.attribute_number = len(self.attribute_names)
-        self.max_values = list(player_stats['max_stats'].values())
-        self.font = get_font('joystix', 'medium')
+        self.max_values = list(player_stats["max_stats"].values())
+        self.font = get_font("joystix", "medium")
 
         # item dimensions
         self.height = self.display_surf.get_height() * 0.8
@@ -31,7 +46,10 @@ class Upgrade:
         keys = pygame.key.get_pressed()
 
         if self.can_move:
-            if keys[CONTROLS[Controls.RIGHT]] and self.selection_index < self.attribute_number - 1:
+            if (
+                keys[CONTROLS[Controls.RIGHT]]
+                and self.selection_index < self.attribute_number - 1
+            ):
                 self.selection_index += 1
                 self.can_move = False
                 self.selection_time = pygame.time.get_ticks()
@@ -69,21 +87,23 @@ class Upgrade:
         self.input()
         self.selection_cooldown()
         player_stats = self.event_bus.publish(Event.GET_PLAYER_STATS)
-        stats = player_stats['stats']
-        max_stats = player_stats['max_stats']
-        upgrade_cost = player_stats['upgrade_cost']
+        stats = player_stats["stats"]
+        max_stats = player_stats["max_stats"]
+        upgrade_cost = player_stats["upgrade_cost"]
         for index, item in enumerate(self.item_list):
             name = self.attribute_names[index]
             value = stats[name]
             max_value = max_stats[name]
             cost = upgrade_cost[name]
-            item.display(self.display_surf, self.selection_index, name, value, max_value, cost)
+            item.display(
+                self.display_surf, self.selection_index, name, value, max_value, cost
+            )
 
     def _apply_upgrade(self, index):
         player_stats = self.event_bus.publish(Event.GET_PLAYER_STATS)
-        stats = player_stats['stats']
-        max_stats = player_stats['max_stats']
-        upgrade_cost = player_stats['upgrade_cost']
+        stats = player_stats["stats"]
+        max_stats = player_stats["max_stats"]
+        upgrade_cost = player_stats["upgrade_cost"]
 
         upgrade_attribute = self.attribute_names[index]
         cost = upgrade_cost[upgrade_attribute]
@@ -97,6 +117,7 @@ class Upgrade:
         if stats[upgrade_attribute] > max_stats[upgrade_attribute]:
             stats[upgrade_attribute] = max_stats[upgrade_attribute]
 
+
 class Item:
     def __init__(self, left, top, width, height, index, font):
         self.rect = pygame.Rect(left, top, width, height)
@@ -107,11 +128,15 @@ class Item:
         color = TEXT_COLOR_SELECTED if selected else TEXT_COLOR
         # title text
         title_surf = self.font.render(name, False, color)
-        title_rect = title_surf.get_rect(midtop=self.rect.midtop + pygame.math.Vector2(0, 20))
+        title_rect = title_surf.get_rect(
+            midtop=self.rect.midtop + pygame.math.Vector2(0, 20)
+        )
 
         # cost text
         cost_surf = self.font.render(str(int(cost)), False, color)
-        cost_rect = cost_surf.get_rect(midbottom=self.rect.midbottom - pygame.math.Vector2(0, 20))
+        cost_rect = cost_surf.get_rect(
+            midbottom=self.rect.midbottom - pygame.math.Vector2(0, 20)
+        )
 
         # draw
         surface.blit(title_surf, title_rect)
@@ -125,7 +150,9 @@ class Item:
         # bar setup
         full_height = bottom[1] - top[1]
         relative_number = (value / max_value) * full_height
-        value_rect = pygame.Rect(top[0] - 15, bottom[1] - relative_number, 30, 10)  # top[0] == bottom[0]
+        value_rect = pygame.Rect(
+            top[0] - 15, bottom[1] - relative_number, 30, 10
+        )  # top[0] == bottom[0]
 
         # draw_elements
         pygame.draw.line(surface, color, top, bottom, 5)

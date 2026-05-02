@@ -3,17 +3,25 @@ import pygame
 from src.data.data import monster_data
 from src.data.sounds import sounds
 from src.entities.entity import Entity
-from src.utils.utils import *
+from src.utils.utils import get_assets_dir, wave_value, import_folder
 
 
 class Enemy(Entity):
-    def __init__(self, monster_name, pos, groups, obstacle_sprites,
-                 damage_player, trigger_death_particles, add_exp):
+    def __init__(
+        self,
+        monster_name,
+        pos,
+        groups,
+        obstacle_sprites,
+        damage_player,
+        trigger_death_particles,
+        add_exp,
+    ):
         self.import_graphics(monster_name)
-        super().__init__(groups, self.animations['idle'][0])
-        self.sprite_type = 'enemy'
+        super().__init__(groups, self.animations["idle"][0])
+        self.sprite_type = "enemy"
 
-        self.status = 'idle'
+        self.status = "idle"
         self.image = self.animations[self.status][self.frame_index]
 
         self.rect = self.image.get_frect(center=pos)
@@ -34,14 +42,14 @@ class Enemy(Entity):
     def _load_monster_stats(self, monster_name):
         self.monster_name = monster_name
         monster_info = monster_data[self.monster_name]
-        self.health = monster_info['health']
-        self.exp = monster_info['exp']
-        self.speed = monster_info['speed']
-        self.attack_damage = monster_info['damage']
-        self.resistance = monster_info['resistance']
-        self.attack_radius = monster_info['attack_radius']
-        self.notice_radius = monster_info['notice_radius']
-        self.attack_type = monster_info['attack_type']
+        self.health = monster_info["health"]
+        self.exp = monster_info["exp"]
+        self.speed = monster_info["speed"]
+        self.attack_damage = monster_info["damage"]
+        self.resistance = monster_info["resistance"]
+        self.attack_radius = monster_info["attack_radius"]
+        self.notice_radius = monster_info["notice_radius"]
+        self.attack_type = monster_info["attack_type"]
         return monster_info
 
     def _init_combat_state(self):
@@ -55,17 +63,17 @@ class Enemy(Entity):
         self.invincibility_duration = 300
 
     def _init_sounds(self, monster_info):
-        self.death_sound = sounds['death']
-        self.hit_sound = sounds['hit']
-        self.attack_sound = pygame.mixer.Sound(monster_info['attack_sound'])
+        self.death_sound = sounds["death"]
+        self.hit_sound = sounds["hit"]
+        self.attack_sound = pygame.mixer.Sound(monster_info["attack_sound"])
         self.death_sound.set_volume(0.6)
         self.hit_sound.set_volume(0.6)
         self.attack_sound.set_volume(0.3)
 
     # noinspection PyAttributeOutsideInit
     def import_graphics(self, name):
-        self.animations = {'idle': [], 'move': [], 'attack': []}
-        main_path = get_assets_dir() + f'graphics/enemies/{name}/'
+        self.animations = {"idle": [], "move": [], "attack": []}
+        main_path = get_assets_dir() + f"graphics/enemies/{name}/"
         for animation in self.animations.keys():
             self.animations[animation] = import_folder(main_path + animation)
 
@@ -83,21 +91,21 @@ class Enemy(Entity):
 
     def get_status(self, distance):
         if distance <= self.attack_radius and self.can_attack:
-            if self.status != 'attack':
+            if self.status != "attack":
                 self.frame_index = 0
-            self.status = 'attack'
+            self.status = "attack"
         elif distance <= self.notice_radius:
-            self.status = 'move'
+            self.status = "move"
         else:
-            self.status = 'idle'
+            self.status = "idle"
 
     def actions(self, direction):
-        if self.status == 'attack':
+        if self.status == "attack":
             self.attack_time = pygame.time.get_ticks()
             self.damage_player(self.attack_damage, self.attack_type)
             self.attack_sound.play()
 
-        elif self.status == 'move':
+        elif self.status == "move":
             self.direction = direction
         else:
             self.direction = pygame.math.Vector2()
@@ -107,7 +115,7 @@ class Enemy(Entity):
 
         self.frame_index += self.animation_speed
         if self.frame_index >= len(animation):
-            if self.status == 'attack':
+            if self.status == "attack":
                 self.can_attack = False
             self.frame_index = 0
 
@@ -135,7 +143,7 @@ class Enemy(Entity):
         if self.vulnerable:
             self.hit_sound.play()
             self.direction = self.get_player_distance_and_direction(player)[1]
-            if attack_type == 'weapon':
+            if attack_type == "weapon":
                 self.health -= player.get_full_weapon_damage()
             else:
                 self.health -= player.get_full_magic_damage()
@@ -144,7 +152,7 @@ class Enemy(Entity):
 
     def hit_reaction(self):
         if not self.vulnerable:
-            self.direction *= - self.resistance
+            self.direction *= -self.resistance
 
     def check_death(self):
         if self.health <= 0:

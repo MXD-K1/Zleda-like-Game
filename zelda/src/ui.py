@@ -1,16 +1,24 @@
 import pygame
+from typing import cast
 
 from src.events import Event, EventBus
-from src.settings import *
+from src.settings import BAR_HEIGHT, ENERGY_BAR_WIDTH, HEALTH_BAR_WIDTH, ITEM_BOX_SIZE
 from src.data.fonts import get_font
 from src.data.data import weapon_data, magic_data
-from src.data.color import *
+from src.data.color import (
+    UI_BG_COLOR,
+    UI_BORDER_COLOR,
+    UI_BORDER_COLOR_ACTIVE,
+    TEXT_COLOR,
+    HEALTH_COLOR,
+    ENERGY_COLOR,
+)
 
 
 class UI:
     def __init__(self, event_bus: EventBus):
         self.display_surf = pygame.display.get_surface()
-        self.font = get_font('joystix', 'medium')
+        self.font = get_font("joystix", "medium")
         self.event_bus = event_bus
 
         # bar setup
@@ -19,14 +27,14 @@ class UI:
 
         self.weapon_graphics = []
         for weapon in weapon_data.values():
-            path = weapon['graphic']
-            weapon_graphic = pygame.image.load(path).convert_alpha()
+            weapon_path = cast(str, weapon["graphic"])  # bypass mypy complaints
+            weapon_graphic = pygame.image.load(weapon_path).convert_alpha()
             self.weapon_graphics.append(weapon_graphic)
 
         self.magic_graphics = []
         for magic in magic_data.values():
-            path = magic['graphic']
-            magic_graphic = pygame.image.load(path).convert_alpha()
+            magic_path = cast(str, magic["graphic"])  # bypass mypy complaints
+            magic_graphic = pygame.image.load(magic_path).convert_alpha()
             self.magic_graphics.append(magic_graphic)
 
     def show_bar(self, current_amount, max_amount, bg_rect, color):
@@ -41,11 +49,17 @@ class UI:
 
     def show_exp(self, exp):
         text_surf = self.font.render(str(int(exp)), False, TEXT_COLOR)
-        text_rect = text_surf.get_rect(bottomright=(self.display_surf.get_size()[0] - 20,
-                                                    self.display_surf.get_size()[1] - 20))
+        text_rect = text_surf.get_rect(
+            bottomright=(
+                self.display_surf.get_size()[0] - 20,
+                self.display_surf.get_size()[1] - 20,
+            )
+        )
         pygame.draw.rect(self.display_surf, UI_BG_COLOR, text_rect.inflate(20, 20))
         self.display_surf.blit(text_surf, text_rect)
-        pygame.draw.rect(self.display_surf, UI_BORDER_COLOR, text_rect.inflate(20, 20), 3)
+        pygame.draw.rect(
+            self.display_surf, UI_BORDER_COLOR, text_rect.inflate(20, 20), 3
+        )
 
     def weapon_overlay(self, weapon_index, has_switched):
         bg_rect = self.selection_box(10, 630, has_switched)  # weapon
@@ -72,8 +86,20 @@ class UI:
         # TODO: get rid of the player arg
         player_stats = self.event_bus.publish(Event.GET_PLAYER_STATS)
         attack_info = self.event_bus.publish(Event.GET_PLAYER_ATTACK_INFO)
-        self.show_bar(self.event_bus.publish(Event.GET_PLAYER_HEALTH), player_stats['stats']['health'], self.health_bar_rect, HEALTH_COLOR)
-        self.show_bar(self.event_bus.publish(Event.GET_PLAYER_ENERGY), player_stats['stats']['energy'], self.energy_bar_rect, ENERGY_COLOR)
+        self.show_bar(
+            self.event_bus.publish(Event.GET_PLAYER_HEALTH),
+            player_stats["stats"]["health"],
+            self.health_bar_rect,
+            HEALTH_COLOR,
+        )
+        self.show_bar(
+            self.event_bus.publish(Event.GET_PLAYER_ENERGY),
+            player_stats["stats"]["energy"],
+            self.energy_bar_rect,
+            ENERGY_COLOR,
+        )
         self.show_exp(self.event_bus.publish(Event.GET_PLAYER_EXP))
-        self.weapon_overlay(attack_info['weapon_index'], attack_info['can_switch_weapon'])
-        self.magic_overlay(attack_info['magic_index'], attack_info['can_switch_magic'])
+        self.weapon_overlay(
+            attack_info["weapon_index"], attack_info["can_switch_weapon"]
+        )
+        self.magic_overlay(attack_info["magic_index"], attack_info["can_switch_magic"])
