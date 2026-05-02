@@ -13,24 +13,24 @@ Scope: finish single-player core, add boss/content loop, ship release build, and
 - Every asset/sound added must have source + license recorded.
 
 ## Game Core Decisions (Lock These Early)
-- [x] Set working title to `ZeldaGame` .
+- [x] Set working title to `ZeldaGame`.
 - [ ] Decide and lock final game name.
-- [x] Lock game type: 2D top-down action-adventure RPG.
-- [x] Lock core mode: single-player first; local co-op optional stretch; pvp later.
-- [x] Lock target platform: Windows/Linux PC first release.
-- [x] Lock engine/runtime: Python + Pygame.
-- [x] Lock camera style: top-down follow camera with smooth damping.
-- [x] Lock art direction: pixel art.
-- [x] Lock combat style: real-time melee + magic with dodge timing.
-- [x] Lock progression model: quest-gated world progression + unlockable abilities.
-- [x] Lock save model: manual save + checkpoint autosave.
-- [x] Lock difficulty model: fixed base difficulty, optional assists in settings.
-- [x] Lock narrative scope: light to medium story with NPC-driven quests (no heavy cutscene dependency).
-- [x] Lock world scope for v1.0: one overworld + at least one dungeon + one full boss.
-- [x] Lock session target: 45-90 minute complete playable loop for first public build.
-- [x] Lock content pipeline: data-driven dialogs/NPCs/quests/items where practical.
-- [x] Lock release gates: `alpha` for unstable feature-complete testing, `beta` for content-locked bug fixing.
-- [x] Lock out-of-scope for v1.0: online multiplayer, mod SDK (if intend), procedural full game world.
+- [x] Decide game type: 2D top-down action-adventure RPG. (Locked)
+- [x] Decide core mode: single-player first; local co-op optional stretch; pvp later. (Locked)
+- [x] Decide target platform: Windows/Linux PC first release. (Locked)
+- [x] Decide engine/runtime: Python + Pygame. (Locked)
+- [x] Decide camera style: top-down follow camera with smooth damping. (Locked)
+- [x] Decide art direction: pixel art. (Locked)
+- [x] Decide combat style: real-time melee + magic with dodge timing. (Locked)
+- [x] Decide progression model: quest-gated world progression + unlockable abilities. (Locked)
+- [x] Decide save model: manual save + checkpoint autosave. (Locked)
+- [x] Decide difficulty model: fixed base difficulty, optional assists in settings. (Locked)
+- [x] Decide narrative scope: light to medium story with NPC-driven quests (no heavy cutscene dependency). (Locked)
+- [x] Decide world scope for v1.0: one overworld + at least one dungeon + one full boss. (Locked)
+- [x] Decide session target: 45-90 minute complete playable loop for first public build. (Locked)
+- [x] Decide content pipeline: data-driven dialogs/NPCs/quests/items where practical. (Locked) 
+- [x] Decide release gates: `alpha` for unstable feature-complete testing, `beta` for content-locked bug fixing. (Locked)
+- [x] Decide out-of-scope for v1.0: online multiplayer, mod SDK (if intend), procedural full game world. (Locked)
 - [ ] Decide target resolution(s) (for example `1280x720` base + scale options).
 - [ ] Decide supported input devices at launch (keyboard only vs keyboard + controller).
 - [ ] Decide death penalty rules (respawn cost, lost currency, or no penalty).
@@ -65,7 +65,7 @@ Scope: finish single-player core, add boss/content loop, ship release build, and
 Target size: 150 features
 
 ### Must Have - Easy (32)
-- [ ] Player can move in 8 directions.
+- [x] Player can move in 4/8 directions. (limited by asset back)
 - [x] Player idle/walk animations play correctly.
 - [x] Camera follows player smoothly.
 - [x] Basic collision with walls/obstacles.
@@ -230,7 +230,7 @@ Target size: 150 features
 ---
 
 ## 1) Code Quality and Tooling TODO
-- [ ] Add `ruff` + `black` configs.
+- [ ] Add `ruff` and its config.
 - [ ] Add `mypy` (gradual typing, start with `events`, `data`, `systems`).
 - [ ] Add CI workflow: lint + tests + packaging smoke check.
 - [ ] Add `tests/` with at least:

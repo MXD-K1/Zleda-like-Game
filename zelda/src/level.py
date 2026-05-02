@@ -81,7 +81,7 @@ class Level:
 
     def _load_map(self, map_name):
         try:
-            player = self.map_loader.load_map(get_assets_dir() + f'map/{map_name}')
+            player = self.map_loader.load_map(get_assets_dir() + f'maps/{map_name}')
             return player
         except pygame.error as e:
             logger.error(f'Could not load map. Error: {e}')

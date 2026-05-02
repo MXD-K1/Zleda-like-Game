@@ -11,7 +11,7 @@ This is the source of truth for refactor status; `docs/TODOS.md` keeps only a mi
 ## Phase R1 (Week 1): Foundation Stabilization
 - [x] Create `zelda/systems/` package.
 - [ ] Extract systems from `zelda/src/level.py` into:
-  - [ ] `zelda/src/systems/combat_system.py`
+  - [x] `zelda/src/systems/combat_system.py`
   - [ ] `zelda/src/systems/magic_system.py`
   - [ ] `zelda/src/systems/audio_system.py`
 - [ ] Add explicit game state flow (`BOOT`, `PLAYING`, `PAUSED`, `DIALOG`, `DEAD`, `CUTSCENE`).

@@ -7,3 +7,9 @@ dependencies = [
     "pygame-ce>=2.5.7",
     "pytmx>=3.32",
 ]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.20.2",
+    "ruff>=0.15.12",
+]
