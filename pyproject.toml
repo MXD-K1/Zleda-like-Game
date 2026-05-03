@@ -13,3 +13,7 @@ dev = [
     "mypy>=1.20.2",
     "ruff>=0.15.12",
 ]
+
+[[tool.mypy.overrides]]
+module = ["pytmx", "pytmx.*"]
+ignore_missing_imports = true
