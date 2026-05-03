@@ -6,7 +6,6 @@ Last updated: 2026-04-29
 
 ## Purpose
 Track the refactor work required to stabilize architecture before deeper content, boss systems, and multiplayer scope.
-This is the source of truth for refactor status; `docs/TODOS.md` keeps only a mirrored summary.
 
 ## Phase R1 (Week 1): Foundation Stabilization
 - [x] Create `zelda/systems/` package.
