@@ -50,7 +50,7 @@ class AudioManager:
 
     def play_sound(self, name: str, endlessly: bool = False):
         try:
-            times = 1 if not endlessly else -1
+            times = 0 if not endlessly else -1
             self.__sounds[name].play(times)
         except KeyError:
             logger.warning(f"Sound {name} not found")
