@@ -1,7 +1,6 @@
 import pygame
 
 from src.settings import TILE_SIZE
-from src.data.sounds import sounds
 from src.settings import HITBOX_OFFSET
 from src.data.data import weapon_data, magic_data
 from src.utils.utils import get_assets_dir, wave_value
@@ -9,6 +8,7 @@ from src.data.controls import Controls, CONTROLS
 from src.entities.entity import Entity
 from src.events import EventBus, Event
 from src.utils.images import cut_spritesheet
+from src.systems.audio_system import audio_manager
 
 
 class Player(Entity):
@@ -68,9 +68,6 @@ class Player(Entity):
         self.hurt_time = None
         self.invulnerability_duration = 500
 
-        self.weapon_attack_sound = sounds["attack"]
-        self.weapon_attack_sound.set_volume(0.4)
-
     # noinspection PyAttributeOutsideInit
     def import_assets(self):
         sheet = cut_spritesheet(
@@ -122,7 +119,7 @@ class Player(Entity):
         self.attacking = True
         self.attack_time = pygame.time.get_ticks()
         self.event_bus.publish(Event.CREATE_ATTACK)
-        self.weapon_attack_sound.play()
+        audio_manager.play_sound("player.attack")
 
     def _cast_magic(self):
         self.attacking = True

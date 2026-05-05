@@ -1,9 +1,9 @@
 import pygame
 
 from src.data.data import monster_data
-from src.data.sounds import sounds
 from src.entities.entity import Entity
 from src.utils.utils import get_assets_dir, wave_value, import_folder
+from src.systems.audio_system import audio_manager
 
 
 class Enemy(Entity):
@@ -63,11 +63,7 @@ class Enemy(Entity):
         self.invincibility_duration = 300
 
     def _init_sounds(self, monster_info):
-        self.death_sound = sounds["death"]
-        self.hit_sound = sounds["hit"]
         self.attack_sound = pygame.mixer.Sound(monster_info["attack_sound"])
-        self.death_sound.set_volume(0.6)
-        self.hit_sound.set_volume(0.6)
         self.attack_sound.set_volume(0.3)
 
     # noinspection PyAttributeOutsideInit
@@ -141,7 +137,7 @@ class Enemy(Entity):
 
     def get_damage(self, player, attack_type):
         if self.vulnerable:
-            self.hit_sound.play()
+            audio_manager.play_sound("monster.hit")
             self.direction = self.get_player_distance_and_direction(player)[1]
             if attack_type == "weapon":
                 self.health -= player.get_full_weapon_damage()
@@ -159,7 +155,7 @@ class Enemy(Entity):
             self.kill()
             self.trigger_death_particles(self.rect.center, self.monster_name)
             self.add_exp(self.exp)
-            self.death_sound.play()
+            audio_manager.play_sound("monster.death")
 
     def update(self):
         self.hit_reaction()

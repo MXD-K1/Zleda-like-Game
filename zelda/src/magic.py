@@ -4,7 +4,7 @@ from random import randint
 import pygame
 
 from src.settings import TILE_SIZE
-from src.data.sounds import sounds
+from src.systems.audio_system import audio_manager
 
 
 class MagicAttacks(Enum):
@@ -15,14 +15,10 @@ class MagicAttacks(Enum):
 class MagicPlayer:
     def __init__(self, animation_player):
         self.animation_player = animation_player
-        self.sounds = {
-            MagicAttacks.HEAL.value: sounds[MagicAttacks.HEAL.value],
-            MagicAttacks.FLAME.value: sounds[MagicAttacks.FLAME.value],
-        }
 
     def heal(self, player, strength, cost, groups):
         if player.energy >= cost:
-            self.sounds[MagicAttacks.HEAL.value].play()
+            audio_manager.play_sound(MagicAttacks.HEAL.value)
             player.health += strength
             player.energy -= cost
             if player.health >= player.stats["health"]:
@@ -39,7 +35,7 @@ class MagicPlayer:
         flame_number = 6
 
         if player.energy >= cost:
-            self.sounds[MagicAttacks.FLAME.value].play()
+            audio_manager.play_sound(MagicAttacks.FLAME.value)
             player.energy -= cost
 
             if player.status.split("_")[0] == "right":

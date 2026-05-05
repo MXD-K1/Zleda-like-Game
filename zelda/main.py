@@ -8,6 +8,7 @@ from src.settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, GAME_TITLE
 from src.data.color import WATER_COLOR
 from src.data.controls import CONTROLS, Controls
 from src.level import Level
+from src.systems.audio_system import audio_manager
 
 # from src.debug import debug
 
@@ -18,6 +19,8 @@ class Game:
     def __init__(self):
         # general setup
         pygame.init()
+        audio_manager.load_sounds()
+
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption(GAME_TITLE)
         self.clock = pygame.time.Clock()
