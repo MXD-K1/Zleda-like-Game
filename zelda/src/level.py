@@ -5,7 +5,6 @@ import pygame
 
 from src.ui import UI
 from src.particles import AnimationPlayer
-from src.magic import MagicPlayer
 from src.upgrade import Upgrade
 from src.map_loader import MapLoader
 from src.utils.utils import get_assets_dir
@@ -15,10 +14,12 @@ from src.data.fonts import init_fonts
 from src.systems.combat_system import Combat
 from src.systems.camera_system import Camera
 from src.systems.audio_system import audio_manager
+from src.systems.magic_system import MagicSystem
 
 # from src.debug import debug
 
 logger = logging.getLogger(__name__)
+
 
 class Level:
     def __init__(self):
@@ -41,14 +42,14 @@ class Level:
 
         # particles
         self.animation_player = AnimationPlayer()
-        self.magic_player = MagicPlayer(self.animation_player)
+        self.magic_system = MagicSystem(self.animation_player)
 
         audio_manager.play_sound("background", True)
 
         self.combat = Combat(
             self.event_bus,
             self.animation_player,
-            self.magic_player,
+            self.magic_system,
             self.attack_sprites,
             self.attackable_sprites,
             self.visible_sprites,
@@ -126,5 +127,7 @@ class Level:
         if not self.should_display_start_screen:
             self._run_active()
         else:
-            audio_manager.stop_sound("background")  # make sure it plays again when the game loads
+            audio_manager.stop_sound(
+                "background"
+            )  # make sure it plays again when the game loads
             self.display_start_screen()

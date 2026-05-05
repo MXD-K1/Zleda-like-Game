@@ -17,6 +17,7 @@ from src.events import Event, EventBus
 
 logger = logging.getLogger(__name__)
 
+
 class Upgrade:
     def __init__(self, event_bus: EventBus):
         self.display_surf = pygame.display.get_surface()

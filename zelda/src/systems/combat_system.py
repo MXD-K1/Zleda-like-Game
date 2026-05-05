@@ -14,7 +14,7 @@ class Combat:
         self,
         event_bus,
         animation_player,
-        magic_player,
+        magic_system,
         attack_sprites,
         attackable_sprites,
         visible_sprites,
@@ -24,7 +24,7 @@ class Combat:
         self.player = None
         self.event_bus = event_bus
         self.animation_player = animation_player
-        self.magic_player = magic_player
+        self.magic_system = magic_system
         self.attack_sprites = attack_sprites
         self.attackable_sprites = attackable_sprites
         self.visible_sprites = visible_sprites
@@ -45,12 +45,17 @@ class Combat:
         )
 
     def create_magic(self, style, strength, cost):
-        if style == "heal":
-            self.magic_player.heal(self.player, strength, cost, [self.visible_sprites])
-        elif style == "flame":
-            self.magic_player.flame(
-                self.player, cost, [self.visible_sprites, self.attack_sprites]
-            )
+        magic_sprite_groups = {
+            "heal": [self.visible_sprites],
+            "flame": [self.visible_sprites, self.attack_sprites],
+        }
+        self.magic_system.cast(
+            player=self.player,
+            style=style,
+            strength=strength,
+            cost=cost,
+            groups=magic_sprite_groups,
+        )
 
     def destroy_attack(self):
         if self.current_attack:

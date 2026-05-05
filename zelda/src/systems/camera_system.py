@@ -7,6 +7,7 @@ from src.settings import LAYERS
 
 logger = logging.getLogger(__name__)
 
+
 class Camera:
     def __init__(self, drawable_sprites, event_bus: EventBus):
         super().__init__()

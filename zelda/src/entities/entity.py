@@ -17,7 +17,9 @@ class Entity(pygame.sprite.Sprite):
 
         # movement
         self.direction = pygame.math.Vector2()
-        self.obstacle_sprites: pygame.sprite.Group = pygame.sprite.Group()  # Have to be replaced
+        self.obstacle_sprites: pygame.sprite.Group = (
+            pygame.sprite.Group()
+        )  # Have to be replaced
 
     def move(self, speed):
         if self.direction.magnitude() != 0:

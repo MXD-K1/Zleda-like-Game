@@ -8,6 +8,7 @@ __all__ = ["audio_manager"]
 
 logger = logging.getLogger(__name__)
 
+
 class AudioManager:
     instance = None
     initiated = False
@@ -26,14 +27,16 @@ class AudioManager:
 
     def load_sounds(self):
         try:
-            self.__sounds.update({
-                "background": mixer.Sound(get_assets_dir() + "audio/main.ogg"),
-                "heal": mixer.Sound(get_assets_dir() + "audio/heal.wav"),
-                "flame": mixer.Sound(get_assets_dir() + "audio/flame.wav"),
-                "player.attack": mixer.Sound(get_assets_dir() + "audio/sword.wav"),
-                "monster.death": mixer.Sound(get_assets_dir() + "audio/death.wav"),
-                "monster.hit": mixer.Sound(get_assets_dir() + "audio/hit.wav"),
-            })
+            self.__sounds.update(
+                {
+                    "background": mixer.Sound(get_assets_dir() + "audio/main.ogg"),
+                    "heal": mixer.Sound(get_assets_dir() + "audio/heal.wav"),
+                    "flame": mixer.Sound(get_assets_dir() + "audio/flame.wav"),
+                    "player.attack": mixer.Sound(get_assets_dir() + "audio/sword.wav"),
+                    "monster.death": mixer.Sound(get_assets_dir() + "audio/death.wav"),
+                    "monster.hit": mixer.Sound(get_assets_dir() + "audio/hit.wav"),
+                }
+            )
 
             self.adjust_sounds()
         except Exception:
@@ -60,5 +63,6 @@ class AudioManager:
             self.__sounds[name].stop()
         except KeyError:
             logger.warning(f"Sound {name} not found")
+
 
 audio_manager = AudioManager()

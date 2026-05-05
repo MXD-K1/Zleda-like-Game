@@ -12,7 +12,7 @@ Track the refactor work required to stabilize architecture before deeper content
 - [ ] Extract systems from `zelda/src/level.py` into:
   - [x] `zelda/src/systems/combat_system.py`
   - [ ] `zelda/src/systems/magic_system.py`
-  - [ ] `zelda/src/systems/audio_system.py`
+  - [x] `zelda/src/systems/audio_system.py`
 - [ ] Add explicit game state flow (`BOOT`, `PLAYING`, `PAUSED`, `DIALOG`, `DEAD`, `CUTSCENE`).
 - [ ] Add startup resource validation wrapper for images/sounds/fonts.
 - [x] Rename `zelda/src/praticles.py` to `zelda/src/particles.py` and update imports.
