@@ -53,7 +53,7 @@ class Level:
             self.visible_sprites,
         )
         self.map_loader = MapLoader(self)
-        self.player = self._load_map("testCam.tmx")
+        self.player = self._load_map("map.tmx")
         self.combat.set_player(self.player)
 
         map_info = self.map_loader.get_map_info()

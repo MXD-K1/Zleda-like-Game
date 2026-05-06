@@ -32,8 +32,6 @@ class Camera:
         self.offset.x = -cam_x + self.half_width
         self.offset.y = -cam_y + self.half_height
 
-        print(target.rect.center)
-
         for layer in LAYERS.values():
             for sprite in sorted(
                 self.drawable_sprites.sprites(), key=lambda s: s.rect.centery

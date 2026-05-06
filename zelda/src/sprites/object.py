@@ -1,7 +1,7 @@
 import pygame
 
 from src.settings import LAYERS
-from src.tile import Tile
+from src.sprites.tile import Tile
 
 
 class Object(Tile):

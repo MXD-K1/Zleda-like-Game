@@ -1,8 +1,8 @@
 from pytmx import load_pygame
 
-from src.tile import Tile
+from src.sprites.tile import Tile
 from src.settings import TILE_SIZE
-from src.object import Object
+from src.sprites.object import Object
 from src.entities.player import Player
 from src.entities.enemy import Enemy
 
@@ -66,7 +66,7 @@ class MapLoader:
         for x, y, surf in self.cur_map.get_layer_by_name("FloorBlocks").tiles():
             Tile(
                 (x * TILE_SIZE, y * TILE_SIZE),
-                [], # [self.level.obstacle_sprites],
+                [self.level.obstacle_sprites],
                 "invisible",
             )
 
