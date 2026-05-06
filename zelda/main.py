@@ -6,7 +6,6 @@ import pygame
 from src.log import setup_logging
 from src.settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, GAME_TITLE
 from src.data.color import WATER_COLOR
-from src.data.controls import CONTROLS, Controls
 from src.level import Level
 from src.systems.audio_system import audio_manager
 
@@ -33,13 +32,13 @@ class Game:
                     pygame.quit()
                     sys.exit()
 
-                if event.type == pygame.KEYDOWN:
-                    if event.key == CONTROLS[Controls.TOGGLE_MENU]:
-                        self.level.toggle_menu()
+                self.level.handle_events(event)
 
             self.screen.fill(WATER_COLOR)
-            self.clock.tick(FPS)
-            self.level.run()
+            dt = self.clock.tick(FPS) / 1000
+
+            self.level.run(dt)
+
             pygame.display.update()
 
 

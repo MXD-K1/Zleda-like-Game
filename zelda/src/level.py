@@ -3,18 +3,10 @@ import logging
 
 import pygame
 
-from src.ui import UI
-from src.particles import AnimationPlayer
-from src.upgrade import Upgrade
-from src.map_loader import MapLoader
-from src.utils.utils import get_assets_dir
-from src.events import EventBus, Event
 from src.data.images import load_images
 from src.data.fonts import init_fonts
-from src.systems.combat_system import Combat
-from src.systems.camera_system import Camera
-from src.systems.audio_system import audio_manager
-from src.systems.magic_system import MagicSystem
+from src.systems.scene_manager import SceneManager
+from src.scenes.main_world import MainWorld
 
 # from src.debug import debug
 
@@ -24,51 +16,11 @@ logger = logging.getLogger(__name__)
 class Level:
     def __init__(self):
         self.load_game()
+        self.scene_manager = SceneManager()
+        self.scene_manager.register_scene("main_world", MainWorld(self.scene_manager))
+        self.scene_manager.go_to_scene("main_world")
 
-        self.display_surf = pygame.display.get_surface()
-        self.event_bus = EventBus()
-        self.game_paused = False
-
-        # sprite groups
-        self.visible_sprites = pygame.sprite.Group()
-        self.obstacle_sprites = pygame.sprite.Group()
-        self.attack_sprites = pygame.sprite.Group()
-        self.attackable_sprites = pygame.sprite.Group()
-
-        # attack
-        self.current_attack = None
-
-        # particles
-        self.animation_player = AnimationPlayer()
-        self.magic_system = MagicSystem(self.animation_player)
-
-        audio_manager.play_sound("background", True)
-
-        self.combat = Combat(
-            self.event_bus,
-            self.animation_player,
-            self.magic_system,
-            self.attack_sprites,
-            self.attackable_sprites,
-            self.visible_sprites,
-        )
-        self.map_loader = MapLoader(self)
-        self.player = self._load_map("map.tmx")
-        self.combat.set_player(self.player)
-
-        map_info = self.map_loader.get_map_info()
-
-        self.cam = Camera(
-            map_info | {
-                "drawable_sprites": self.visible_sprites
-            }, self.event_bus)
-
-        # events
-        self.subscribe_events()
-
-        self.ui = UI(self.event_bus)
-        self.upgrade = Upgrade(self.event_bus)
-        self.should_display_start_screen = False
+        # self.should_display_start_screen = False
 
     @staticmethod
     def load_game():
@@ -85,54 +37,14 @@ class Level:
         _load_resource(load_images, "images")
         _load_resource(init_fonts, "fonts")
 
-    def display_start_screen(self):
-        self.display_surf.fill((50, 50, 50))
+    def handle_events(self, event):
+        self.scene_manager.handle_events(event)
 
-    def _load_map(self, map_name):
-        try:
-            player = self.map_loader.load_map(get_assets_dir() + f"maps/{map_name}")
-            return player
-        except pygame.error as e:
-            logger.error(f"Could not load map. Error: {e}")
-            pygame.quit()
-            sys.exit()
-
-    def subscribe_events(self):
-        self.event_bus.subscribe(Event.GET_PLAYER_DIRECTION, self.player.get_direction)
-        self.event_bus.subscribe(Event.GET_PLAYER_RECT, self.player.get_rect)
-        self.event_bus.subscribe(Event.GET_PLAYER_WEAPON, self.player.get_weapon)
-        self.event_bus.subscribe(Event.GET_PLAYER_EXP, self.player.get_exp)
-        self.event_bus.subscribe(Event.GET_PLAYER_HEALTH, self.player.get_health)
-        self.event_bus.subscribe(Event.GET_PLAYER_ENERGY, self.player.get_energy)
-        self.event_bus.subscribe(Event.GET_PLAYER_STATS, self.player.get_stats)
-        self.event_bus.subscribe(
-            Event.GET_PLAYER_ATTACK_INFO, self.player.get_attack_info
-        )
-
-    def trigger_death_particles(self, pos, particle_type):
-        self.animation_player.create_particles(
-            particle_type, pos, [self.visible_sprites]
-        )
-
-    def toggle_menu(self):
-        self.game_paused = not self.game_paused
-
-    def _run_active(self):
-        self.cam.custom_draw(self.player)
-        self.ui.display()
-
-        if self.game_paused:
-            self.upgrade.display()
-        else:
-            self.cam.update()
-            self.cam.enemy_update(self.player)
-            self.combat.player_attack_logic()
-
-    def run(self):
-        if not self.should_display_start_screen:
-            self._run_active()
-        else:
-            audio_manager.stop_sound(
-                "background"
-            )  # make sure it plays again when the game loads
-            self.display_start_screen()
+    def run(self, dt):
+        # if not self.should_display_start_screen:
+        self.scene_manager.update(dt)
+        self.scene_manager.draw()
+        # else:
+        #     audio_manager.stop_sound(
+        #         "background"
+        #     )  # make sure it plays again when the game loads

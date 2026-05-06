@@ -9,7 +9,7 @@ class Scene(ABC):
         self.manager: SceneManager = manager
 
     @abstractmethod
-    def handle_events(self):
+    def handle_events(self, event):
         pass
 
     @abstractmethod
@@ -39,8 +39,8 @@ class SceneManager:
         self.cur_scene = self.prev_scene
         self.prev_scene = None
 
-    def handle_events(self):
-        self.cur_scene.handle_events()
+    def handle_events(self, event):
+        self.cur_scene.handle_events(event)
 
     def update(self, dt: float):
         self.cur_scene.update(dt)
