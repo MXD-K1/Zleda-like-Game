@@ -35,8 +35,6 @@ class Level:
         self.attack_sprites = pygame.sprite.Group()
         self.attackable_sprites = pygame.sprite.Group()
 
-        self.cam = Camera(self.visible_sprites, self.event_bus)
-
         # attack
         self.current_attack = None
 
@@ -55,8 +53,15 @@ class Level:
             self.visible_sprites,
         )
         self.map_loader = MapLoader(self)
-        self.player = self._load_map("map.tmx")
+        self.player = self._load_map("testCam.tmx")
         self.combat.set_player(self.player)
+
+        map_info = self.map_loader.get_map_info()
+
+        self.cam = Camera(
+            map_info | {
+                "drawable_sprites": self.visible_sprites
+            }, self.event_bus)
 
         # events
         self.subscribe_events()
@@ -113,7 +118,7 @@ class Level:
         self.game_paused = not self.game_paused
 
     def _run_active(self):
-        self.cam.custom_draw()
+        self.cam.custom_draw(self.player)
         self.ui.display()
 
         if self.game_paused:

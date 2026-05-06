@@ -17,6 +17,14 @@ class MapLoader:
             level.attackable_sprites,
         ]
 
+        self.cur_map = None
+
+    def get_map_info(self):
+        return {
+            "width": TILE_SIZE * self.cur_map.width,
+            "height": TILE_SIZE * self.cur_map.height
+        }
+
     def empty_groups(self):
         for group in self.groups:
             group.empty()
@@ -24,10 +32,10 @@ class MapLoader:
     # noinspection PyTypeChecker,PyUnresolvedReferences
     def load_map(self, map_path):
         self.empty_groups()
-        map_ = load_pygame(map_path)
+        self.cur_map = load_pygame(map_path)
         player = None
 
-        for x, y, surf in map_.get_layer_by_name("Floor").tiles():
+        for x, y, surf in self.cur_map.get_layer_by_name("Floor").tiles():
             Tile(
                 (x * TILE_SIZE, y * TILE_SIZE),
                 [self.level.visible_sprites],
@@ -35,7 +43,7 @@ class MapLoader:
                 surf,
             )
 
-        for x, y, surf in map_.get_layer_by_name("Grass").tiles():
+        for x, y, surf in self.cur_map.get_layer_by_name("Grass").tiles():
             Tile(
                 (x * TILE_SIZE, y * TILE_SIZE),
                 [
@@ -47,7 +55,7 @@ class MapLoader:
                 surf,
             )
 
-        for x, y, surf in map_.get_layer_by_name("Objects").tiles():
+        for x, y, surf in self.cur_map.get_layer_by_name("Objects").tiles():
             Object(
                 (x * TILE_SIZE, y * TILE_SIZE),
                 [self.level.visible_sprites, self.level.obstacle_sprites],
@@ -55,14 +63,14 @@ class MapLoader:
                 surf,
             )
 
-        for x, y, surf in map_.get_layer_by_name("FloorBlocks").tiles():
+        for x, y, surf in self.cur_map.get_layer_by_name("FloorBlocks").tiles():
             Tile(
                 (x * TILE_SIZE, y * TILE_SIZE),
-                [self.level.obstacle_sprites],
+                [], # [self.level.obstacle_sprites],
                 "invisible",
             )
 
-        for obj in map_.get_layer_by_name("Entity-Pos"):
+        for obj in self.cur_map.get_layer_by_name("Entity-Pos"):
             if obj.name == "player":
                 player = Player(
                     (obj.x, obj.y),

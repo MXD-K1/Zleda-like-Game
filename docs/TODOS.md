@@ -1,7 +1,8 @@
 # TODOs - 90 Day Playable + Publish Plan
 
 Last updated: 2026-04-29
-Scope: finish single-player core, add boss/content loop, ship release build, and implement multiplayer in controlled scope.
+Scope: finish single-player core, add boss/content loop, ship release build,
+and implement multiplayer in controlled scope.
 
 > Disclaimer: This file was written by AI
 
@@ -77,7 +78,7 @@ Target size: 150 features
 - [x] Player can take damage.
 - [x] Player invulnerability frames after hit.
 - [x] Health bar UI updates in real time.
-- [ ] Energy/magic bar UI updates in real time.
+- [x] Energy/magic bar UI updates in real time.
 - [ ] Pause menu opens/closes reliably.
 - [ ] Resume from pause works.
 - [ ] Main menu with Start/Quit options.
@@ -230,8 +231,9 @@ Target size: 150 features
 ---
 
 ## 1) Code Quality and Tooling TODO
-- [ ] Add `ruff` and its config.
-- [ ] Add `mypy` (gradual typing, start with `events`, `data`, `systems`).
+- [x] Add `ruff` and its config.
+- [x] Add `mypy` 
+- [ ] Start adding type hints gradually.
 - [ ] Add CI workflow: lint + tests + packaging smoke check.
 - [ ] Add `tests/` with at least:
   - [ ] save/load roundtrip.
